@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0F1720">
+<title>Login - Monitoring Pagu & Kas</title>
+<style>
+:root{--bg:#0F1720;--surface:#17222D;--card:#1D2A36;--border:#2A3947;--text:#F4F7FA;--dim:#97A7B5;--brand:#2FBF9F;--danger:#F0716B}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Segoe UI,system-ui,-apple-system,sans-serif}body{min-height:100dvh;display:grid;place-items:center;padding:24px}.card{width:100%;max-width:360px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px 20px;box-shadow:0 12px 30px rgba(0,0,0,.35)}h1{font-size:22px;margin:0 0 6px;text-align:center}.sub{font-size:13px;color:var(--dim);margin:0 0 20px;text-align:center}.field{margin-bottom:14px}.field label{display:block;font-size:12px;color:var(--dim);font-weight:650;margin-bottom:6px}.field input{width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:12px;font:inherit;outline:none}.field input:focus{border-color:var(--brand)}button{font:inherit}.primary{width:100%;border:0;border-radius:12px;padding:12px 14px;background:var(--brand);color:#04231C;font-weight:800;cursor:pointer}.primary:disabled{opacity:.55;cursor:wait}.link{display:block;margin:12px auto 0;border:0;background:transparent;color:var(--brand);font-weight:700;font-size:12px;cursor:pointer}.msg{min-height:18px;margin:10px 0 8px;color:var(--danger);font-size:12px;font-weight:650;text-align:center}.ready{color:var(--dim);font-size:11px;text-align:center;margin-top:12px}
+</style>
+</head>
+<body>
+<main class="card">
+  <h1>Login Tim Proyek</h1>
+  <p class="sub">Monitoring Pagu &amp; Kas</p>
+  <div class="field"><label>Email</label><input id="email" type="email" autocomplete="email" placeholder="nama@perusahaan.com"></div>
+  <div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Masukkan password"></div>
+  <div class="msg" id="msg"></div>
+  <button class="primary" id="login" disabled>Menyiapkan login...</button>
+  <button class="link" id="forgot" disabled>Lupa Password?</button>
+  <div class="ready" id="ready">Halaman login sudah siap. Menghubungkan keamanan...</div>
+</main>
+<script>
+const cfg={apiKey:"AIzaSyAVJwggJpS8tA6zaQJpgvAwYVRQeZ_tkKc",authDomain:"progress-kerja.firebaseapp.com",databaseURL:"https://progress-kerja-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"progress-kerja",storageBucket:"progress-kerja.firebasestorage.app",messagingSenderId:"996691495573",appId:"1:996691495573:web:59e1d7ed91cdc795c9699c"};
+const $=id=>document.getElementById(id), btn=$('login'), forgot=$('forgot'), msg=$('msg'), ready=$('ready');
+function load(src){return new Promise((ok,fail)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=fail;document.body.appendChild(s)})}
+async function boot(){
+ try{
+  await load('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
+  await Promise.all([
+   load('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js'),
+   load('https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js')
+  ]);
+  firebase.initializeApp(cfg);
+  const auth=firebase.auth(), db=firebase.database();
+  window._auth=auth; window._db=db;
+  btn.disabled=false; forgot.disabled=false; btn.textContent='Masuk Aplikasi'; ready.textContent='Keamanan siap';
+  auth.onAuthStateChanged(async user=>{
+    if(!user) return;
+    try{
+      const snap=await db.ref('users/'+user.uid).once('value'), p=snap.val();
+      if(!p || p.active!==true || !p.role){ await auth.signOut(); msg.textContent='Akun belum aktif atau profil pengguna belum valid.'; return; }
+      localStorage.setItem('userRole',p.role); localStorage.setItem('userName',p.name||user.email||'Pengguna');
+      location.replace('app-v5.3.html');
+    }catch(e){msg.textContent='Gagal membaca profil pengguna. Coba lagi.';}
+  });
+ }catch(e){btn.textContent='Coba Muat Ulang';btn.disabled=false;ready.textContent='Koneksi keamanan belum siap';msg.textContent='Komponen login gagal dimuat. Periksa koneksi internet.';}
+}
+btn.onclick=async()=>{
+ if(btn.textContent==='Coba Muat Ulang'){location.reload();return}
+ const email=$('email').value.trim(), password=$('password').value;
+ if(!email||!password){msg.textContent='Email dan password wajib diisi.';return}
+ btn.disabled=true;btn.textContent='Memproses...';msg.textContent='';
+ try{await window._auth.signInWithEmailAndPassword(email,password)}
+ catch(e){msg.textContent='Email atau password tidak cocok.';btn.disabled=false;btn.textContent='Masuk Aplikasi'}
+};
+forgot.onclick=async()=>{
+ const email=$('email').value.trim(); if(!email){msg.textContent='Isi email terlebih dahulu.';return}
+ try{await window._auth.sendPasswordResetEmail(email);msg.style.color='var(--brand)';msg.textContent='Email reset password sudah dikirim.'}
+ catch(e){msg.style.color='var(--danger)';msg.textContent='Gagal mengirim reset password. Periksa email.'}
+};
+requestAnimationFrame(()=>setTimeout(boot,0));
+</script>
+</body></html>
