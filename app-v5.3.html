@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- V5.7 Mobile Responsive UI — visual responsive layer only -->
+<!-- V5.8 Mobile Enterprise UI — mobile composition upgrade; data/auth flow unchanged -->
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -810,6 +810,165 @@ body{
 }
 </style>
 
+
+<style id="v58-mobile-enterprise-ui">
+/* =========================================================
+   V5.8 — Mobile Enterprise UI
+   Mobile-only composition layer. Firebase/Auth/Rules/schema untouched.
+   ========================================================= */
+.mobile-section-head,.mobile-project-page-head,.mobile-project-overview,.mobile-detail-tabs{display:none;}
+@media (max-width:700px){
+  :root{--v58-bg:#071019;--v58-surface:#0d1822;--v58-surface2:#101e29;--v58-border:#203440;--v58-cyan:#20c6cf;--v58-muted:#8ea4b3;}
+  body{background:radial-gradient(circle at 50% -80px,rgba(20,128,150,.14),transparent 300px),var(--v58-bg)!important;}
+  .app-header{padding:14px 16px 0!important;}
+  .profile-row{min-height:48px;margin:0 0 20px!important;align-items:center!important;}
+  .profile-row::before{content:'▰  Monitoring\A     Pagu & Kas';white-space:pre;color:#f5f9fb;font-size:12px;line-height:1.1;font-weight:850;letter-spacing:-.01em;}
+  .profile-identity{margin-left:auto!important;order:2;}
+  .profile-identity .profile-copy{display:none!important;}
+  .avatar{width:36px!important;height:36px!important;flex-basis:36px!important;border-color:#8fc9d2!important;font-size:10px!important;}
+  .profile-actions{order:3;margin-left:7px!important;}
+  .profile-actions .icon-control{width:34px!important;height:34px!important;background:transparent!important;border:0!important;color:#a9b8c4!important;}
+  #btnSettingsVisual{display:none!important;}
+  #btnLogout{font-size:17px!important;}
+  .page-heading{margin:0 0 8px!important;}
+  .page-heading h1{display:block!important;font-size:11px!important;color:var(--v58-cyan)!important;text-transform:none!important;letter-spacing:.02em!important;margin:0 0 9px!important;}
+  .page-heading h1{font-size:0!important;}
+  .page-heading h1::after{content:'Executive Overview';font-size:11px!important;}
+  .personal-greeting{padding:0 0 15px!important;}
+  .personal-greeting-main{font-size:27px!important;line-height:1.08!important;}
+  .personal-greeting-sub{font-size:12px!important;color:var(--v58-muted)!important;}
+  .personal-dashboard{gap:13px!important;margin-bottom:13px!important;}
+
+  /* Executive KPI cards */
+  .finance-hero{gap:8px!important;margin-bottom:13px!important;}
+  .finance-hero-top,.finance-item{min-height:92px!important;padding:13px!important;border-color:var(--v58-border)!important;background:linear-gradient(145deg,#0f1d28,#0b151e)!important;border-radius:12px!important;}
+  .eyebrow,.finance-item span{font-size:10px!important;color:#9cb0be!important;margin-bottom:8px!important;}
+  .finance-hero-top>strong{font-size:19px!important;white-space:normal!important;overflow-wrap:anywhere!important;}
+  .finance-item strong{font-size:15px!important;white-space:normal!important;overflow-wrap:anywhere!important;}
+  .finance-crossing{grid-column:auto!important;min-height:92px!important;}
+  .crossing-summary-card{grid-column:1/-1!important;background:transparent!important;padding:0 3px!important;margin:0!important;}
+
+  /* Decision center */
+  .attention-card{border-radius:13px!important;padding:13px!important;background:linear-gradient(145deg,rgba(89,24,31,.46),rgba(31,14,20,.55))!important;border-color:rgba(226,76,87,.37)!important;}
+  .attention-title{font-size:12px!important;font-weight:850!important;}
+  .attention-item{padding:10px!important;border-radius:9px!important;}
+
+  /* Portfolio health */
+  .mobile-section-head{display:flex;align-items:center;justify-content:space-between;margin:15px 0 0;padding:12px 1px 9px;}
+  .mobile-section-head>div{display:flex;flex-direction:column;gap:2px;}
+  .mobile-section-head strong{font-size:13px;color:#f3f7f9;}
+  .mobile-section-head span{font-size:9px;color:#8298a8;}
+  .mobile-section-head button{border:0;background:transparent;color:var(--v58-cyan);font:inherit;font-size:10px;font-weight:700;padding:7px 0;}
+  .summary{border-color:var(--v58-border)!important;border-radius:12px!important;background:#0c1721!important;margin-bottom:16px!important;}
+  .summary-chip{padding:14px 5px!important;border-right-color:var(--v58-border)!important;}
+  .summary-chip .num{font-size:22px!important;}
+  .summary-chip .lbl{font-size:8.5px!important;}
+
+  /* True mobile view states */
+  body.mobile-view-dashboard .search-toolbar,
+  body.mobile-view-dashboard .advanced-filters,
+  body.mobile-view-dashboard #tabsBar,
+  body.mobile-view-dashboard .approval-banner,
+  body.mobile-view-dashboard .section-label,
+  body.mobile-view-dashboard #list,
+  body.mobile-view-dashboard .mobile-project-page-head{display:none!important;}
+  body.mobile-view-dashboard .fab{display:none!important;}
+
+  body.mobile-view-projects .page-heading,
+  body.mobile-view-projects .personal-dashboard,
+  body.mobile-view-projects #financeBar,
+  body.mobile-view-projects .mobile-health-head,
+  body.mobile-view-projects #summary{display:none!important;}
+  body.mobile-view-projects .mobile-project-page-head{display:block!important;padding:0 16px 10px;}
+  .mobile-project-page-head>div{display:flex;flex-direction:column;gap:3px;}
+  .mobile-project-page-head span{font-size:10px;color:var(--v58-cyan);font-weight:750;}
+  .mobile-project-page-head strong{font-size:24px;color:#f5f8fa;line-height:1.1;}
+  .mobile-project-page-head small{font-size:10px;color:#8ba0af;}
+  body.mobile-view-projects .search-toolbar{margin:0 16px 9px!important;}
+  body.mobile-view-projects #tabsBar{padding-left:16px!important;padding-right:16px!important;overflow-x:auto!important;flex-wrap:nowrap!important;scrollbar-width:none;}
+  body.mobile-view-projects #tabsBar::-webkit-scrollbar{display:none;}
+  body.mobile-view-projects .section-label{padding-left:16px!important;}
+  body.mobile-view-projects #list{padding-left:16px!important;padding-right:16px!important;}
+  body.mobile-view-projects .fab{display:flex!important;}
+
+  body.mobile-view-cash .page-heading,
+  body.mobile-view-cash .personal-dashboard,
+  body.mobile-view-cash .mobile-health-head,
+  body.mobile-view-cash #summary,
+  body.mobile-view-cash .search-toolbar,
+  body.mobile-view-cash .advanced-filters,
+  body.mobile-view-cash #tabsBar,
+  body.mobile-view-cash .approval-banner,
+  body.mobile-view-cash .section-label,
+  body.mobile-view-cash #list,
+  body.mobile-view-cash .mobile-project-page-head{display:none!important;}
+  body.mobile-view-cash #financeBar{margin:10px 16px!important;}
+  body.mobile-view-cash #financeBar::before{content:'Cash Position';grid-column:1/-1;font-size:22px;font-weight:850;color:#f5f8fa;margin-bottom:2px;}
+  body.mobile-view-cash .fab{display:none!important;}
+
+  /* Project cards now read like mobile portfolio rows */
+  .project-card{border-radius:13px!important;background:linear-gradient(145deg,#0e1a24,#0b151e)!important;border-color:var(--v58-border)!important;}
+  .project-card-header{padding:13px!important;}
+  .project-card-code{font-size:13px!important;color:#f5f8fa!important;}
+  .project-card-sub{font-size:11px!important;color:#96aab8!important;max-width:235px;}
+  .rag-badge{display:none!important;}
+  .mobile-project-overview{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px 8px;align-items:center;margin-top:11px;}
+  .mobile-project-progress{display:grid;grid-template-columns:32px minmax(70px,1fr);gap:7px;align-items:center;}
+  .mobile-project-progress>strong{font-size:10px;color:#dfe9ee;}
+  .mobile-progress-track{height:6px;background:#2a3c4b;border-radius:99px;overflow:hidden;}
+  .mobile-progress-track i{display:block;height:100%;background:#24c8d0;border-radius:99px;}
+  .mobile-health{font-size:8.5px;font-weight:800;padding:4px 7px;border-radius:99px;white-space:nowrap;}
+  .mobile-health.ontrack{background:rgba(50,191,118,.17);color:#5fe39d;}
+  .mobile-health.atrisk{background:rgba(240,181,57,.17);color:#ffc857;}
+  .mobile-health.critical{background:rgba(236,79,89,.17);color:#ff777f;}
+  .mobile-project-value{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;padding-top:2px;}
+  .mobile-project-value span{font-size:9px;color:#8096a5;}
+  .mobile-project-value strong{font-size:10.5px;color:#e5edf1;}
+  .btn-manage-project{height:30px!important;padding:0 8px!important;font-size:9.5px!important;}
+  .project-card-actions .chevron::after{font-size:20px!important;}
+
+  /* Expanded project = compact project workspace with tabs */
+  .mobile-detail-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:0 -11px 12px;border-bottom:1px solid #263844;overflow-x:auto;}
+  .mobile-detail-tabs button{border:0;background:transparent;color:#8ea2b0;font:inherit;font-size:9px;font-weight:700;padding:11px 3px 9px;border-bottom:2px solid transparent;}
+  .mobile-detail-tabs button.active{color:var(--v58-cyan);border-bottom-color:var(--v58-cyan);}
+  .exec-director{padding-top:0!important;}
+  .exec-health{border-radius:11px!important;background:#101d27!important;border-color:#273b48!important;}
+  .exec-score{font-size:23px!important;}
+  .exec-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;}
+  .exec-box{border-radius:10px!important;background:#0d1821!important;border-color:#263945!important;padding:10px!important;}
+  .exec-box span{font-size:8px!important;}.exec-box strong{font-size:11px!important;}.exec-box small{font-size:8px!important;}
+  .exec-section{border-radius:10px!important;}
+  .exec-owner-row{grid-template-columns:1fr!important;}
+
+  .project-card[data-detail-tab="summary"] .exec-grid,
+  .project-card[data-detail-tab="summary"] .exec-owner-row,
+  .project-card[data-detail-tab="summary"] .exec-detail-head,
+  .project-card[data-detail-tab="summary"] .trx-list,
+  .project-card[data-detail-tab="summary"] .btn-add-trx{display:none!important;}
+  .project-card[data-detail-tab="finance"] .exec-health,
+  .project-card[data-detail-tab="finance"] .exec-section,
+  .project-card[data-detail-tab="finance"] .exec-owner-row,
+  .project-card[data-detail-tab="finance"] .exec-detail-head,
+  .project-card[data-detail-tab="finance"] .trx-list,
+  .project-card[data-detail-tab="finance"] .btn-add-trx{display:none!important;}
+  .project-card[data-detail-tab="activities"] .exec-health,
+  .project-card[data-detail-tab="activities"] .exec-grid,
+  .project-card[data-detail-tab="activities"] .exec-section,
+  .project-card[data-detail-tab="activities"] .exec-owner-row{display:none!important;}
+  .project-card[data-detail-tab="team"] .exec-health,
+  .project-card[data-detail-tab="team"] .exec-grid,
+  .project-card[data-detail-tab="team"] .exec-section,
+  .project-card[data-detail-tab="team"] .exec-detail-head,
+  .project-card[data-detail-tab="team"] .trx-list,
+  .project-card[data-detail-tab="team"] .btn-add-trx{display:none!important;}
+
+  /* App navigation */
+  .bottom-nav{height:74px!important;background:rgba(7,14,20,.97)!important;border-top-color:#20323e!important;}
+  .bottom-nav-item{border-radius:9px!important;}
+  .bottom-nav-item.active{background:rgba(31,198,207,.08)!important;color:#26cad2!important;}
+}
+</style>
+
 </head>
 <body>
 
@@ -894,7 +1053,7 @@ body{
     </div>
     <div class="attention-card" id="attentionCard">
       <div class="attention-head">
-        <div class="attention-title-wrap"><span class="attention-icon">⚑</span><span class="attention-title">Perlu Perhatian</span></div>
+        <div class="attention-title-wrap"><span class="attention-icon">⚑</span><span class="attention-title">Membutuhkan Keputusan Anda</span></div>
         <span class="attention-count clear" id="attentionCount">0</span>
       </div>
       <div class="attention-list" id="attentionList">
@@ -921,6 +1080,7 @@ body{
     </div>
   </section>
 
+  <div class="mobile-section-head mobile-health-head"><div><strong>Portfolio Health</strong><span>Status keseluruhan proyek</span></div><button type="button" id="mobileViewAllProjects">Lihat semua ›</button></div>
   <div class="summary" id="summary"></div>
 
   <div class="search-toolbar">
@@ -956,6 +1116,7 @@ body{
   </div>
 </header>
 
+<div class="mobile-project-page-head"><div><span>Portfolio</span><strong>Proyek</strong><small>Daftar proyek, status, progres, dan nilai kontrak.</small></div></div>
 <div class="approval-banner" id="approvalBanner">
   <span id="approvalBannerText">Ada data menunggu persetujuan hapus</span>
   <span class="approval-banner-arrow">Lihat →</span>
@@ -2302,14 +2463,20 @@ const firebaseConfig = {
       : '';
 
     const addTrxBtn = (currentRole === 'admin' || currentRole === 'finance') ? `<button class="btn-add-trx" data-add-trx="${p.id}">+ Tambah Rincian Transaksi</button>` : '';
+    const mobileEx = getDirectorExecutiveSummary(p, txs, agg);
+    const mobileHealth = mobileEx.overdue.length ? 'At Risk' : (mobileEx.total && mobileEx.completed < mobileEx.total ? 'On Track' : (mobileEx.total ? 'On Track' : 'Critical'));
+    const mobileHealthClass = mobileHealth === 'On Track' ? 'ontrack' : (mobileHealth === 'At Risk' ? 'atrisk' : 'critical');
+    const mobileMetaHtml = `<div class="mobile-project-overview"><div class="mobile-project-progress"><strong>${mobileEx.avgProgress}%</strong><div class="mobile-progress-track"><i style="width:${Math.max(0,Math.min(100,mobileEx.avgProgress))}%"></i></div></div><span class="mobile-health ${mobileHealthClass}">${mobileHealth}</span><div class="mobile-project-value"><span>Nilai Kontrak</span><strong>${fmtRp(agg.contractVal)}</strong></div></div>`;
+    const mobileDetailTabs = isExpanded ? `<div class="mobile-detail-tabs" role="tablist"><button class="active" data-mobile-detail-tab="summary">Ringkasan</button><button data-mobile-detail-tab="finance">Keuangan</button><button data-mobile-detail-tab="activities">Aktivitas</button><button data-mobile-detail-tab="team">Tim</button></div>` : '';
 
     return `
-      <div class="project-card" data-project-id="${p.id}" style="--project-accent:${pal.accent};">
+      <div class="project-card" data-project-id="${p.id}" data-detail-tab="summary" style="--project-accent:${pal.accent};">
         <div class="project-card-header" data-toggle-project="${p.id}">
           <div class="project-card-title-wrap">
             <div class="project-card-code" style="color:${pal.textMain};">${escapeHtml(p.projectCode)}</div>
             <div class="project-card-sub" style="color:${pal.textSub};">${escapeHtml(p.subKegiatan || 'Paket Utama')}</div>
             <div class="rag-badge" style="background:${pal.chipBg}; color:${pal.accent}; border:1px solid ${pal.accent}55;">${rag.emoji} ${rag.label}</div>
+            ${mobileMetaHtml}
           </div>
           <div class="project-card-actions">
             ${editDeleteIcons}
@@ -2317,6 +2484,7 @@ const firebaseConfig = {
           </div>
         </div>
         <div class="project-card-body-wrap" style="${isExpanded ? '' : 'display:none;'}">
+          ${mobileDetailTabs}
           ${financeGridHtml}
           <div class="trx-list">
             ${txRowsHtml}
@@ -2400,6 +2568,15 @@ const firebaseConfig = {
         const id = el.dataset.toggleProject;
         expandedProjectId = (expandedProjectId === id) ? null : id;
         render();
+      });
+    });
+    listEl.querySelectorAll('[data-mobile-detail-tab]').forEach(el=>{
+      el.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const card = el.closest('.project-card');
+        if(!card) return;
+        card.dataset.detailTab = el.dataset.mobileDetailTab || 'summary';
+        card.querySelectorAll('[data-mobile-detail-tab]').forEach(b=>b.classList.toggle('active', b===el));
       });
     });
     listEl.querySelectorAll('[data-edit-project]').forEach(el=>{
@@ -2948,6 +3125,30 @@ const firebaseConfig = {
     const settings=document.getElementById('btnSettingsVisual');
     settings&&settings.addEventListener('click',()=>window.openAccountSettings&&window.openAccountSettings());
   })();
+</script>
+
+
+<script id="v58-mobile-view-controller">
+(function(){
+  const mobile=()=>window.matchMedia('(max-width:700px)').matches;
+  function setView(view){
+    if(!mobile()) return;
+    document.body.classList.remove('mobile-view-dashboard','mobile-view-projects','mobile-view-cash','mobile-view-log');
+    document.body.classList.add('mobile-view-'+view);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function bind(){
+    if(!mobile()) return;
+    if(!document.body.classList.contains('mobile-view-dashboard')&&!document.body.classList.contains('mobile-view-projects')&&!document.body.classList.contains('mobile-view-cash')&&!document.body.classList.contains('mobile-view-log')) setView('dashboard');
+    document.getElementById('navDashboard')?.addEventListener('click',()=>setView('dashboard'));
+    document.getElementById('navProjects')?.addEventListener('click',()=>setView('projects'));
+    document.getElementById('navCash')?.addEventListener('click',()=>setView('cash'));
+    document.getElementById('navLog')?.addEventListener('click',()=>{setView('projects');setTimeout(()=>document.getElementById('btnViewFeed')?.click(),0);});
+    document.getElementById('mobileViewAllProjects')?.addEventListener('click',()=>{setView('projects');document.querySelectorAll('.bottom-nav-item').forEach(b=>b.classList.toggle('active',b.id==='navProjects'));});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind); else bind();
+  window.addEventListener('resize',()=>{if(!mobile()) document.body.classList.remove('mobile-view-dashboard','mobile-view-projects','mobile-view-cash','mobile-view-log');});
+})();
 </script>
 
 </body>
