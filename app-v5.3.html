@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Monitoring Pagu, Kontrak & Kas Proyek</title>
+<title>Monitoring Pagu, Kontrak & Kas Proyek — V5.5 Executive</title>
 <style>#loginScreen{display:none!important}</style>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -537,6 +537,19 @@ body{
   .project-card{contain-intrinsic-size:150px;}
   .finance-hero,.summary-chip,.search-wrap,.tabs-shell{box-shadow:none!important;}
 }
+
+/* ===== V5.5 EXECUTIVE DIRECTOR VIEW ===== */
+.exec-director{display:grid;gap:12px;margin-top:4px}
+.exec-health{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;border-radius:15px;background:#151a20;border:1px solid #303740}
+.exec-health-copy strong{display:block;font-size:14px;color:#fff;margin-bottom:3px}.exec-health-copy span{font-size:11px;color:var(--text-dim);line-height:1.45}
+.exec-score{font-size:22px;font-weight:900;white-space:nowrap}
+.exec-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.exec-box{padding:12px;border-radius:13px;background:#151a20;border:1px solid #303740;min-width:0}.exec-box span{display:block;font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px}.exec-box strong{display:block;font-size:13px;color:#fff;line-height:1.35;overflow-wrap:anywhere}.exec-box small{display:block;font-size:10px;color:var(--text-dim);margin-top:4px;line-height:1.4}
+.exec-section{padding:12px 13px;border-radius:13px;background:#151a20;border:1px solid #303740}.exec-section-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#c8cdd2;margin-bottom:7px}.exec-decision{border-color:rgba(239,99,99,.35);background:rgba(239,99,99,.055)}.exec-plan{border-color:rgba(71,199,166,.34);background:rgba(71,199,166,.055)}
+.exec-line{font-size:12px;color:#edf0f2;line-height:1.55}.exec-muted{color:var(--text-dim)}
+.exec-owner-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.exec-owner{padding:10px;border-radius:12px;background:#12171d;border:1px solid #2b323a}.exec-owner span{display:block;font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}.exec-owner strong{display:block;font-size:11px;color:#fff;overflow-wrap:anywhere}
+.exec-detail-head{margin-top:2px;padding-top:11px;border-top:1px solid #303740;font-size:11px;font-weight:800;color:#c8cdd2;text-transform:uppercase;letter-spacing:.04em}
+@media(max-width:620px){.exec-grid{grid-template-columns:1fr 1fr}.exec-owner-row{grid-template-columns:1fr}.exec-score{font-size:19px}}
+
 </style>
 </head>
 <body>
@@ -764,8 +777,9 @@ body{
         </select>
       </div>
       <div class="field">
-        <label>Total Fee Marketing (Auto)</label>
-        <input type="text" id="pMarketingFee" disabled style="font-weight:700; color:var(--marketing);" value="Rp 0">
+        <label>Total Fee Marketing (Rp)</label>
+        <input type="text" inputmode="numeric" id="pMarketingFee" placeholder="0" style="font-weight:700; color:var(--marketing);">
+        <div style="font-size:10px;color:var(--text-dim);margin-top:5px;line-height:1.4;">Otomatis dihitung dari tarif, tetapi Direktur dapat menetapkan nominal final.</div>
       </div>
     </div>
 
@@ -1610,7 +1624,7 @@ const firebaseConfig = {
     const contractVal = Number(project.contractValue || 0);
     const limitOp = pagu * 0.01;
     const mRate = Number(project.marketingRate !== undefined ? project.marketingRate : 0.0075);
-    const mFee = contractVal * mRate;
+    const mFee = (project.marketingFee !== undefined && project.marketingFee !== null && project.marketingFee !== '') ? Number(project.marketingFee || 0) : (contractVal * mRate);
     const mTerm = project.marketingTerm || 'dp';
     const sumCashOut = txList.reduce((a,t)=> a + Number(t.cashOut || 0), 0);
     const sumCashIn = txList.reduce((a,t)=> a + Number(t.cashIn || 0), 0);
@@ -1925,6 +1939,59 @@ const firebaseConfig = {
     { name: 'oranye', accent: '#FF9F43', rgb: '255,159,67', textMain: '#FFFFFF', textSub: '#AEB3B9', chipBg: 'rgba(255,159,67,0.14)' }
   ];
 
+  function getDirectorExecutiveSummary(p, txs, agg){
+    const today = todayStr();
+    const validTx = (txs || []).filter(t => t.deleteRequested !== true);
+    const total = validTx.length;
+    const completed = validTx.filter(t => t.status === 'selesai').length;
+    const overdue = validTx.filter(t => t.status !== 'selesai' && (t.date || '').substring(0,10) && (t.date || '').substring(0,10) < today);
+    const avgProgress = total ? Math.round(validTx.reduce((a,t)=>a+Number(t.progress||0),0)/total) : 0;
+    const pendingDelete = validTx.filter(t => t.deleteRequested === true).length;
+    const latest = validTx.slice().sort((a,b)=> (b.updatedAt || b.recordedAt || b.date || '').localeCompare(a.updatedAt || a.recordedAt || a.date || ''))[0];
+    const nextTx = validTx.filter(t => t.status !== 'selesai' && t.nextPlan).sort((a,b)=> (a.date || '').localeCompare(b.date || ''))[0] || validTx.find(t=>t.nextPlan);
+    const pic = p.picName || p.pic || p.picLabel || 'Belum ditetapkan';
+    const manager = p.managerName || p.manager || p.managerLabel || 'Belum ditetapkan';
+    const lastUpdated = (latest && (latest.updatedAt || latest.recordedAt || latest.date)) || p.updatedAt || p.createdAt || '-';
+    let healthLabel='TERKENDALI', healthColor='var(--done)', healthNote='Tidak ada exception utama dari data saat ini.';
+    if (overdue.length || agg.crossingState === 'terhutang') { healthLabel='PERLU PERHATIAN'; healthColor='var(--todo)'; healthNote='Ada exception yang perlu dipantau atau diputuskan.'; }
+    else if (total && completed < total) { healthLabel='BERJALAN'; healthColor='var(--progress)'; healthNote='Proyek masih berjalan dan perlu dipantau.'; }
+    const decisions=[];
+    if (overdue.length) decisions.push(`${overdue.length} aktivitas melewati jadwal`);
+    if (agg.crossingState === 'terhutang') decisions.push(`DP/crossing masih terhutang ${fmtRp(Math.max(0,agg.crossingTarget-agg.sumCashIn))}`);
+    if (!total) decisions.push('Belum ada aktivitas proyek yang dicatat');
+    if (!decisions.length) decisions.push('Belum ada keputusan mendesak');
+    return {total,completed,overdue,avgProgress,pendingDelete,latest,nextTx,pic,manager,lastUpdated,healthLabel,healthColor,healthNote,decisions};
+  }
+
+  function renderDirectorExecutiveView(p, txs, agg){
+    const ex = getDirectorExecutiveSummary(p, txs, agg);
+    const nextPlan = ex.nextTx && ex.nextTx.nextPlan ? ex.nextTx.nextPlan : 'Belum ada rencana berikutnya yang dicatat.';
+    const crossingText = agg.crossingState==='lunas' ? 'Lunas / tertutup DP' : agg.crossingState==='terhutang' ? `Terhutang ${fmtRp(Math.max(0,agg.crossingTarget-agg.sumCashIn))}` : 'Belum ada transaksi kas';
+    return `
+      <div class="exec-director">
+        <div class="exec-health">
+          <div class="exec-health-copy"><strong style="color:${ex.healthColor};">${ex.healthLabel}</strong><span>${escapeHtml(ex.healthNote)}</span></div>
+          <div class="exec-score" style="color:${ex.healthColor};">${ex.avgProgress}%</div>
+        </div>
+        <div class="exec-grid">
+          <div class="exec-box"><span>Pagu Pekerjaan</span><strong>${fmtRp(agg.pagu)}</strong><small>Ditetapkan Direktur</small></div>
+          <div class="exec-box"><span>Nilai Kontrak</span><strong>${fmtRp(agg.contractVal)}</strong><small>Ditetapkan Direktur</small></div>
+          <div class="exec-box"><span>Marketing Fee</span><strong>${fmtRp(agg.mFee)}</strong><small>${(agg.mRate*100).toFixed(2).replace('.00','')}% · ${agg.mTerm==='dp'?'Cair DP':'Cair selesai'}</small></div>
+          <div class="exec-box"><span>DP Masuk</span><strong>${fmtRp(agg.sumCashIn)}</strong><small>${escapeHtml(crossingText)}</small></div>
+          <div class="exec-box"><span>Operasional</span><strong>${fmtRp(agg.sumCashOut)}</strong><small>Plafon 1%: ${fmtRp(agg.limitOp)}</small></div>
+          <div class="exec-box"><span>Progress</span><strong>${ex.completed} / ${ex.total} tahap selesai</strong><small>${ex.overdue.length} terlambat</small></div>
+        </div>
+        <div class="exec-section exec-decision"><div class="exec-section-title">⚠️ Perlu Keputusan / Perhatian Direktur</div><div class="exec-line">${ex.decisions.map(x=>escapeHtml(x)).join(' · ')}</div></div>
+        <div class="exec-section exec-plan"><div class="exec-section-title">🎯 Rencana Berikutnya</div><div class="exec-line">${escapeHtml(nextPlan)}</div></div>
+        <div class="exec-owner-row">
+          <div class="exec-owner"><span>PIC</span><strong>${escapeHtml(ex.pic)}</strong></div>
+          <div class="exec-owner"><span>Manager / Head</span><strong>${escapeHtml(ex.manager)}</strong></div>
+          <div class="exec-owner"><span>Terakhir diperbarui</span><strong>${escapeHtml(ex.lastUpdated)}</strong></div>
+        </div>
+        <div class="exec-detail-head">Rincian Aktivitas</div>
+      </div>`;
+  }
+
   function renderProjectCard(p, txs, idx){
     const agg = computeProjectAgg(p, txs);
     const isExpanded = expandedProjectId === p.id;
@@ -1932,7 +1999,7 @@ const firebaseConfig = {
     const rag = computeRAGStatus(txs);
     const pal = CARD_PALETTE[(idx || 0) % CARD_PALETTE.length];
 
-    const financeGridHtml = (currentRole !== 'admin') ? `
+    const financeGridHtml = currentRole === 'direktur' ? renderDirectorExecutiveView(p, txs, agg) : (currentRole !== 'admin') ? `
       <div class="card-pagu-info">
         <div><span>Pagu Paket:</span><strong>${fmtRp(agg.pagu)}</strong></div>
         <div><span>Plafon Op (1%):</span><strong style="color:var(--progress);">${fmtRp(agg.limitOp)}</strong></div>
@@ -1962,7 +2029,7 @@ const firebaseConfig = {
       ? (sortedTx.length ? sortedTx.map(t => renderTxRow(t)).join('') : `<div class="empty-tx">Belum ada rincian transaksi untuk proyek ini.</div>`)
       : '';
 
-    const addTrxBtn = (currentRole === 'admin' || currentRole === 'finance' || currentRole === 'direktur') ? `<button class="btn-add-trx" data-add-trx="${p.id}">+ Tambah Rincian Transaksi</button>` : '';
+    const addTrxBtn = (currentRole === 'admin' || currentRole === 'finance') ? `<button class="btn-add-trx" data-add-trx="${p.id}">+ Tambah Rincian Transaksi</button>` : '';
 
     return `
       <div class="project-card" data-project-id="${p.id}" style="--project-accent:${pal.accent};">
@@ -2072,10 +2139,11 @@ const firebaseConfig = {
     pLimitOp.value = fmtRp(paguVal * 0.01);
     const cVal = getMoneyValue(pContractValue);
     const rate = Number(pMarketingRate.value || 0);
-    pMarketingFee.value = fmtRp(cVal * rate);
+    setMoneyValue(pMarketingFee, cVal * rate);
   }
   attachMoneyFormatting(pPagu);
   attachMoneyFormatting(pContractValue);
+  attachMoneyFormatting(pMarketingFee);
   attachMoneyFormatting(tCashOut);
   attachMoneyFormatting(tCashIn);
   pPagu.addEventListener('input', updateProjectCalc);
@@ -2087,7 +2155,7 @@ const firebaseConfig = {
     editingProjectId = null;
     projectSheetTitle.textContent = 'Tambah Proyek Baru';
     pProjectInput.value = ''; pSubKegiatan.value = '';
-    setMoneyValue(pPagu, ''); setMoneyValue(pContractValue, '');
+    setMoneyValue(pPagu, ''); setMoneyValue(pContractValue, ''); setMoneyValue(pMarketingFee, '');
     pMarketingRate.value = '0.0075'; pMarketingTerm.value = 'dp';
     updateProjectCalc();
     projectAuditHistory.style.display = 'none';
@@ -2109,6 +2177,7 @@ const firebaseConfig = {
     pMarketingRate.value = (p.marketingRate !== undefined ? p.marketingRate : 0.0075);
     pMarketingTerm.value = p.marketingTerm || 'dp';
     updateProjectCalc();
+    setMoneyValue(pMarketingFee, (p.marketingFee !== undefined ? p.marketingFee : (Number(p.contractValue||0) * Number(p.marketingRate !== undefined ? p.marketingRate : 0.0075))));
 
     if (p.auditLogs && p.auditLogs.length){
       projectAuditHistory.style.display = 'block';
@@ -2143,6 +2212,7 @@ const firebaseConfig = {
     const pagu = getMoneyValue(pPagu);
     const contractValue = getMoneyValue(pContractValue);
     const marketingRate = Number(pMarketingRate.value);
+    const marketingFee = getMoneyValue(pMarketingFee);
     const marketingTerm = pMarketingTerm.value;
 
     const oldProject = projects.find(x=>x.id===editingProjectId) || {};
@@ -2152,8 +2222,10 @@ const firebaseConfig = {
       const changes = [];
       const oldPagu = Number(oldProject.pagu || 0);
       const oldContract = Number(oldProject.contractValue || 0);
+      const oldMarketingFee = (oldProject.marketingFee !== undefined) ? Number(oldProject.marketingFee || 0) : (oldContract * Number(oldProject.marketingRate !== undefined ? oldProject.marketingRate : 0.0075));
       if (oldPagu !== pagu) changes.push(`Pagu: ${fmtRp(oldPagu)} -> ${fmtRp(pagu)}`);
       if (oldContract !== contractValue) changes.push(`Kontrak: ${fmtRp(oldContract)} -> ${fmtRp(contractValue)}`);
+      if (oldMarketingFee !== marketingFee) changes.push(`Marketing Fee: ${fmtRp(oldMarketingFee)} -> ${fmtRp(marketingFee)}`);
 
       if (changes.length > 0){
         const reason = prompt(`Terdeteksi perubahan nominal:\n${changes.join('\n')}\n\nWAJIB: Masukkan alasan perubahan ini:`);
@@ -2165,7 +2237,7 @@ const firebaseConfig = {
       }
     }
 
-    const payload = { projectCode, subKegiatan, pagu, contractValue, marketingRate, marketingTerm, auditLogs };
+    const payload = { projectCode, subKegiatan, pagu, contractValue, marketingRate, marketingFee, marketingTerm, auditLogs, updatedAt: getRealtimeString() };
 
     if (editingProjectId){
       projectsRef.child(editingProjectId).update(payload);
