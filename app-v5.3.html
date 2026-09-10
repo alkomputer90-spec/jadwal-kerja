@@ -4,7 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Monitoring Pagu, Kontrak & Kas Proyek — V5.5 Executive</title>
-<style>#loginScreen{display:none!important}</style>
+<style>#loginScreen{display:none!important}
+/* V5.6 Professional Project Actions */
+.project-manage-wrap{position:relative;z-index:30}
+.btn-manage-project{height:34px;padding:0 13px;border-radius:10px;border:1px solid #48515b;background:#24292f;color:#f2f4f6;font:inherit;font-size:12px;font-weight:750;letter-spacing:.01em;cursor:pointer;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.btn-manage-project:hover{background:#2c3239;border-color:#5b6672}
+.btn-manage-project .dots{font-size:17px;line-height:1;color:#aeb5bd;margin-top:-3px}
+.project-action-menu{position:absolute;right:0;top:40px;width:260px;padding:7px;background:#20242a;border:1px solid #454c55;border-radius:13px;box-shadow:0 18px 45px rgba(0,0,0,.42);display:none;z-index:100}
+.project-action-menu.show{display:block}
+.project-action-item{width:100%;border:0;background:transparent;color:#f2f4f6;border-radius:9px;padding:10px 11px;text-align:left;cursor:pointer;display:flex;gap:10px;align-items:flex-start;font:inherit}
+.project-action-item:hover{background:#2b3037}
+.project-action-item .pa-icon{width:20px;text-align:center;color:#c5cbd2;font-size:14px;padding-top:1px}
+.project-action-item strong{display:block;font-size:12px;line-height:1.25}
+.project-action-item small{display:block;color:#969ea7;font-size:10px;line-height:1.35;margin-top:3px;font-weight:500}
+.project-action-item.danger strong,.project-action-item.danger .pa-icon{color:#ff7777}
+.project-action-sep{height:1px;background:#393f47;margin:6px 4px}
+.project-action-item.disabled{opacity:.48;cursor:not-allowed}
+.project-action-item.disabled:hover{background:transparent}
+@media(max-width:520px){.project-action-menu{width:240px}.btn-manage-project{padding:0 11px}}
+
+</style>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -2018,8 +2037,21 @@ const firebaseConfig = {
     ` : `<div style="font-size:11px; color:${pal.textSub}; margin-top:4px;">${txs.length} rincian aktivitas</div>`;
 
     const editDeleteIcons = (currentRole === 'direktur') ? `
-      <button class="icon-btn" data-edit-project="${p.id}" title="Edit Proyek">✏️</button>
-      <button class="icon-btn danger" data-delete-project="${p.id}" title="Hapus Proyek">🗑️</button>
+      <div class="project-manage-wrap">
+        <button class="btn-manage-project" data-manage-project="${p.id}" aria-haspopup="menu" aria-expanded="false">Kelola <span class="dots">…</span></button>
+        <div class="project-action-menu" data-project-menu="${p.id}" role="menu">
+          <button class="project-action-item" data-edit-project="${p.id}" role="menuitem">
+            <span class="pa-icon">✎</span><span><strong>Edit Proyek</strong><small>Ubah informasi & nilai komersial</small></span>
+          </button>
+          <button class="project-action-item disabled" type="button" disabled aria-disabled="true">
+            <span class="pa-icon">◎</span><span><strong>Kelola Penanggung Jawab</strong><small>Penetapan PIC & Manager disiapkan pada tahap berikutnya</small></span>
+          </button>
+          <div class="project-action-sep"></div>
+          <button class="project-action-item danger" data-delete-project="${p.id}" role="menuitem">
+            <span class="pa-icon">×</span><span><strong>Hapus Proyek</strong><small>Tindakan permanen — memerlukan konfirmasi</small></span>
+          </button>
+        </div>
+      </div>
     ` : '';
 
     // Performance: detail transaksi hanya dirender saat kartu dibuka.
@@ -2112,6 +2144,17 @@ const firebaseConfig = {
   }
 
   function attachListEvents(){
+    listEl.querySelectorAll('[data-manage-project]').forEach(el=>{
+      el.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const id = el.dataset.manageProject;
+        const menu = listEl.querySelector(`[data-project-menu="${id}"]`);
+        const willOpen = menu && !menu.classList.contains('show');
+        listEl.querySelectorAll('.project-action-menu.show').forEach(m=>m.classList.remove('show'));
+        listEl.querySelectorAll('[data-manage-project]').forEach(b=>b.setAttribute('aria-expanded','false'));
+        if(menu && willOpen){ menu.classList.add('show'); el.setAttribute('aria-expanded','true'); }
+      });
+    });
     listEl.querySelectorAll('[data-toggle-project]').forEach(el=>{
       el.addEventListener('click', ()=>{
         const id = el.dataset.toggleProject;
@@ -2120,10 +2163,10 @@ const firebaseConfig = {
       });
     });
     listEl.querySelectorAll('[data-edit-project]').forEach(el=>{
-      el.addEventListener('click', (e)=>{ e.stopPropagation(); openEditProject(el.dataset.editProject); });
+      el.addEventListener('click', (e)=>{ e.stopPropagation(); listEl.querySelectorAll('.project-action-menu.show').forEach(m=>m.classList.remove('show')); openEditProject(el.dataset.editProject); });
     });
     listEl.querySelectorAll('[data-delete-project]').forEach(el=>{
-      el.addEventListener('click', (e)=>{ e.stopPropagation(); deleteProjectCascade(el.dataset.deleteProject); });
+      el.addEventListener('click', (e)=>{ e.stopPropagation(); listEl.querySelectorAll('.project-action-menu.show').forEach(m=>m.classList.remove('show')); deleteProjectCascade(el.dataset.deleteProject); });
     });
     listEl.querySelectorAll('[data-add-trx]').forEach(el=>{
       el.addEventListener('click', (e)=>{ e.stopPropagation(); openAddTx(el.dataset.addTrx); });
@@ -2131,6 +2174,14 @@ const firebaseConfig = {
     listEl.querySelectorAll('[data-edit-tx]').forEach(el=>{
       el.addEventListener('click', (e)=>{ e.stopPropagation(); openEditTx(el.dataset.editTx); });
     });
+  }
+
+  if(!window.__projectMenuOutsideClick){
+    document.addEventListener('click', ()=>{
+      document.querySelectorAll('.project-action-menu.show').forEach(m=>m.classList.remove('show'));
+      document.querySelectorAll('[data-manage-project]').forEach(b=>b.setAttribute('aria-expanded','false'));
+    });
+    window.__projectMenuOutsideClick = true;
   }
 
   // ===================== PROJECT FORM =====================
