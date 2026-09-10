@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- V5.9 Mobile UI Consistency & Polish — mobile-only visual refinement; data/auth flow unchanged -->
+<!-- V5.9.1 Mobile UI QA Hardened — role testing fixes + visible write errors; data model/auth flow unchanged -->
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -1742,7 +1742,7 @@ const firebaseConfig = {
     render();
   });
 
-  const roleLabelMap = { direktur: 'Direktur', komisaris: 'Komisaris', finance: 'Finance', admin: 'Staff Admin' };
+  const roleLabelMap = { direktur: 'Direktur', komisaris: 'Komisaris', finance: 'Finance', manager: 'Manager / Head', pic: 'PIC / Project Manager', admin: 'Staff Admin' };
 
   const approvalBanner = document.getElementById('approvalBanner');
   const approvalBannerText = document.getElementById('approvalBannerText');
@@ -2380,13 +2380,15 @@ const firebaseConfig = {
     listEl.querySelectorAll('[data-approve-tx]').forEach(el=>{
       el.addEventListener('click', ()=>{
         if (currentRole !== 'direktur') return;
-        transactionsRef.child(el.dataset.approveTx).remove();
+        transactionsRef.child(el.dataset.approveTx).remove()
+          .catch(err=> alert('Gagal menyetujui penghapusan: ' + (err && err.message ? err.message : err)));
       });
     });
     listEl.querySelectorAll('[data-reject-tx]').forEach(el=>{
       el.addEventListener('click', ()=>{
         if (currentRole !== 'direktur') return;
-        transactionsRef.child(el.dataset.rejectTx).update({ deleteRequested: false, requestedBy: null, reqDate: null });
+        transactionsRef.child(el.dataset.rejectTx).update({ deleteRequested: false, requestedBy: null, reqDate: null })
+          .catch(err=> alert('Gagal menolak penghapusan: ' + (err && err.message ? err.message : err)));
       });
     });
   }
@@ -2818,16 +2820,20 @@ const firebaseConfig = {
 
     const payload = { projectCode, subKegiatan, pagu, contractValue, marketingRate, marketingFee, marketingTerm, auditLogs, updatedAt: getRealtimeString() };
 
-    if (editingProjectId){
-      projectsRef.child(editingProjectId).update(payload);
-    } else {
-      payload.createdAt = getRealtimeString();
-      payload.createdBy = currentRole;
-      const newRef = projectsRef.push(payload);
-      expandedProjectId = newRef.key;
-      render();
-    }
-    overlayProject.classList.remove('show');
+    pBtnSave.disabled = true;
+    const writePromise = editingProjectId
+      ? projectsRef.child(editingProjectId).update(payload)
+      : (()=>{
+          payload.createdAt = getRealtimeString();
+          payload.createdBy = currentRole;
+          const newRef = projectsRef.push();
+          expandedProjectId = newRef.key;
+          return newRef.set(payload);
+        })();
+    writePromise
+      .then(()=>{ overlayProject.classList.remove('show'); })
+      .catch(err=> alert('Gagal menyimpan proyek: ' + (err && err.message ? err.message : err)))
+      .finally(()=>{ pBtnSave.disabled = false; });
   });
 
   pBtnDelete.addEventListener('click', ()=>{
@@ -3003,40 +3009,45 @@ const firebaseConfig = {
 
     const payload = { projectId, title, date, progress, status, notes, nextPlan, bankCode, cashIn, cashOut, recordedAt, updatedAt, auditLogs };
 
-    if (editingTxId){
-      transactionsRef.child(editingTxId).update({ ...payload, updatedBy: currentRole });
-    } else {
-      transactionsRef.push({ ...payload, createdBy: currentRole, updatedBy: currentRole, deleteRequested: false, requestedBy: null });
-    }
-    overlayTx.classList.remove('show');
+    tBtnSave.disabled = true;
+    const txWritePromise = editingTxId
+      ? transactionsRef.child(editingTxId).update({ ...payload, updatedBy: currentRole })
+      : transactionsRef.push().set({ ...payload, createdBy: currentRole, updatedBy: currentRole, deleteRequested: false, requestedBy: null });
+    txWritePromise
+      .then(()=>{ overlayTx.classList.remove('show'); })
+      .catch(err=> alert('Gagal menyimpan aktivitas/transaksi: ' + (err && err.message ? err.message : err)))
+      .finally(()=>{ tBtnSave.disabled = false; });
   });
 
   tBtnDelete.addEventListener('click', ()=>{
     if (currentRole !== 'direktur' || !editingTxId) return;
     if (confirm('Hapus rincian transaksi ini secara permanen?')){
-      transactionsRef.child(editingTxId).remove();
-      overlayTx.classList.remove('show');
+      transactionsRef.child(editingTxId).remove()
+        .then(()=> overlayTx.classList.remove('show'))
+        .catch(err=> alert('Gagal menghapus rincian: ' + (err && err.message ? err.message : err)));
     }
   });
 
   tBtnReqDelete.addEventListener('click', ()=>{
     if ((currentRole !== 'admin' && currentRole !== 'finance') || !editingTxId) return;
     const reqTimestamp = getRealtimeString();
-    transactionsRef.child(editingTxId).update({ deleteRequested: true, requestedBy: currentRole, reqDate: reqTimestamp });
-    alert(`Permintaan hapus dicatat pada ${reqTimestamp}. Menunggu ACC Direktur.`);
-    overlayTx.classList.remove('show');
+    transactionsRef.child(editingTxId).update({ deleteRequested: true, requestedBy: currentRole, reqDate: reqTimestamp })
+      .then(()=>{ alert(`Permintaan hapus dicatat pada ${reqTimestamp}. Menunggu ACC Direktur.`); overlayTx.classList.remove('show'); })
+      .catch(err=> alert('Gagal mengajukan hapus: ' + (err && err.message ? err.message : err)));
   });
 
   tBtnApproveDelete.addEventListener('click', ()=>{
     if (currentRole !== 'direktur' || !editingTxId) return;
-    transactionsRef.child(editingTxId).remove();
-    overlayTx.classList.remove('show');
+    transactionsRef.child(editingTxId).remove()
+      .then(()=> overlayTx.classList.remove('show'))
+      .catch(err=> alert('Gagal menyetujui penghapusan: ' + (err && err.message ? err.message : err)));
   });
 
   tBtnRejectDelete.addEventListener('click', ()=>{
     if (currentRole !== 'direktur' || !editingTxId) return;
-    transactionsRef.child(editingTxId).update({ deleteRequested: false, requestedBy: null, reqDate: null });
-    overlayTx.classList.remove('show');
+    transactionsRef.child(editingTxId).update({ deleteRequested: false, requestedBy: null, reqDate: null })
+      .then(()=> overlayTx.classList.remove('show'))
+      .catch(err=> alert('Gagal menolak penghapusan: ' + (err && err.message ? err.message : err)));
   });
 
   function deleteProjectCascade(id){
@@ -3165,13 +3176,15 @@ const firebaseConfig = {
     const b=budgetFor(projectId), exception=(b.remaining-amount)<0, code=nextCode(), id=fundRef.push().key, matrix=matrixFor(amount);
     const initialStatus=r==='pic'?'FINANCE_REVIEW':'SUBMITTED';
     const obj={id,code,projectId,category:$('ofrCategory').value,purpose,amount,neededDate,beneficiary:$('ofrBeneficiary').value.trim(),evidence:$('ofrEvidence').value.trim(),notes:$('ofrNotes').value.trim(),status:initialStatus,createdBy:r,createdAt:now(),createdMs:Date.now(),budgetException:exception,approvalRoute:matrix.route,auditLogs:addLog([],r==='pic'?'SUBMITTED_AND_PIC_APPROVED':'SUBMITTED',r==='pic'?'PIC membuat request sekaligus menyatakan operational approval; lanjut Finance verification.':'Request submitted; nominal dikunci untuk approval.')};
-    fundRef.child(id).set(obj).then(()=>{$('overlayOfr').classList.remove('show');openModule();});
+    fundRef.child(id).set(obj)
+      .then(()=>{$('overlayOfr').classList.remove('show');openModule();})
+      .catch(err=>alert('Gagal mengirim Operational Fund Request: '+(err&&err.message?err.message:err)));
   });
 
   function nextAfterFinance(fr){const a=Number(fr.amount||0); if(fr.budgetException)return'DIRECTOR_APPROVAL'; if(a<=1000000)return'APPROVED_FOR_PAYMENT'; if(a<=5000000)return'MANAGER_APPROVAL'; return'MANAGER_APPROVAL';}
   function afterManager(fr){const a=Number(fr.amount||0); return (a<=5000000&&!fr.budgetException)?'APPROVED_FOR_PAYMENT':'DIRECTOR_APPROVAL';}
   function afterDirector(fr){return Number(fr.amount||0)>100000000?'BOARD_APPROVAL':'APPROVED_FOR_PAYMENT';}
-  function actionUpdate(fr,newStatus,action,note,extra={}){const logs=addLog(fr.auditLogs,action,note);return fundRef.child(fr.id).update({...extra,status:newStatus,auditLogs:logs,updatedAt:now()});}
+  function actionUpdate(fr,newStatus,action,note,extra={}){const logs=addLog(fr.auditLogs,action,note);return fundRef.child(fr.id).update({...extra,status:newStatus,auditLogs:logs,updatedAt:now()}).catch(err=>{alert('Aksi approval gagal: '+(err&&err.message?err.message:err));throw err;});}
   function askNote(label,required=true){const n=prompt(label)||''; if(required&&!n.trim())return null;return n.trim();}
 
   function openDetail(id){selectedId=id; const fr=fundRequests.find(x=>x.id===id);if(!fr)return; const p=projectById(fr.projectId),b=budgetFor(fr.projectId),r=role(),m=matrixFor(Number(fr.amount||0));
@@ -3209,7 +3222,7 @@ const firebaseConfig = {
     const tx={projectId:fr.projectId,title:'OFR '+fr.code+' · '+fr.purpose,date:today(),progress:0,status:'sedang',notes:'Disbursement dari approved Operational Fund Request. Payment ref: '+ref,nextPlan:'Menunggu settlement/pertanggungjawaban.',bankCode:bank,cashIn:0,cashOut:paid,recordedAt:now(),updatedAt:now(),createdBy:'finance',updatedBy:'finance',deleteRequested:false,requestedBy:null,ofrId:fr.id};
     const logs=addLog(fr.auditLogs,'PAID','Payment '+rp(paid)+' · '+bank+' · Ref '+ref,'finance');
     const updates={};updates['/fundRequests/'+fr.id+'/status']='PAID';updates['/fundRequests/'+fr.id+'/payment']=payment;updates['/fundRequests/'+fr.id+'/paymentTxId']=txKey;updates['/fundRequests/'+fr.id+'/auditLogs']=logs;updates['/transactions/'+txKey]=tx;
-    db.ref().update(updates).then(()=>openDetail(fr.id));
+    db.ref().update(updates).then(()=>openDetail(fr.id)).catch(err=>alert('Proses pembayaran gagal: '+(err&&err.message?err.message:err)));
   }
   function settleReq(fr){const actualText=prompt('Actual expense / total bukti (Rp):','0');if(actualText===null)return;const retText=prompt('Sisa dana yang dikembalikan (Rp):','0');if(retText===null)return;const actual=Number(String(actualText).replace(/[^0-9]/g,''))||0,ret=Number(String(retText).replace(/[^0-9]/g,''))||0;const paid=Number(fr.payment?.amount||fr.amount||0);if(actual+ret!==paid){alert('Settlement tidak balance. Actual Expense + Return harus sama dengan dana yang dicairkan ('+rp(paid)+').');return;}const evidence=askNote('Referensi bukti/receipt/nota/transfer pengembalian (wajib):');if(evidence===null)return;const settlement={actualExpense:actual,returnAmount:ret,evidence,submittedAt:now(),submittedBy:role()};actionUpdate(fr,'SETTLEMENT_SUBMITTED','SETTLEMENT_SUBMITTED','Actual '+rp(actual)+'; return '+rp(ret)+'; evidence '+evidence,{settlement}).then(()=>openDetail(fr.id));}
   function verifySettlement(fr){const note=askNote('Catatan verifikasi settlement (wajib):');if(note===null)return;const st=fr.settlement||{},paid=Number(fr.payment?.amount||fr.amount||0);if(Number(st.actualExpense||0)+Number(st.returnAmount||0)!==paid){alert('Settlement tidak balance dan tidak dapat ditutup.');return;}actionUpdate(fr,'CLOSED','SETTLEMENT_VERIFIED_AND_CLOSED',note,{closedAt:now(),closedBy:'finance'}).then(()=>openDetail(fr.id));}
