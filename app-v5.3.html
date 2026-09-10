@@ -367,6 +367,29 @@
   .profile-actions{display:flex;gap:8px;align-items:center}.icon-control{width:44px;height:44px;border-radius:14px;border:0;background:transparent;color:#c8cbd0;font-size:23px;display:grid;place-items:center;cursor:pointer}.icon-control:hover{background:var(--surface)}
   .btn-clean-all{position:fixed;top:8px;left:8px;z-index:30;opacity:.05;width:1px;height:1px;overflow:hidden;padding:0;border:0}
   .page-heading{margin-bottom:16px}.page-heading h1{font-size:25px;line-height:1.15;letter-spacing:-.02em;margin:0 0 18px}.page-heading p{font-size:17px;font-weight:700;margin:0}
+
+  /* PERSONAL DASHBOARD V5.4 */
+  .personal-dashboard{display:grid;gap:12px;margin:0 0 18px;}
+  .personal-greeting{background:linear-gradient(145deg,rgba(47,191,159,.16),rgba(78,159,255,.08));border:1px solid rgba(47,191,159,.28);border-radius:18px;padding:16px 17px;}
+  .personal-greeting-main{font-size:18px;font-weight:800;letter-spacing:-.01em;color:var(--text-main);}
+  .personal-greeting-sub{font-size:12px;line-height:1.5;color:#aab7c2;margin-top:5px;}
+  .attention-card{background:var(--surface);border:1px solid var(--card-border);border-radius:18px;padding:14px 15px;}
+  .attention-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
+  .attention-title-wrap{display:flex;align-items:center;gap:9px;min-width:0;}
+  .attention-icon{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(242,169,59,.12);font-size:16px;}
+  .attention-title{font-size:14px;font-weight:800;}
+  .attention-count{min-width:27px;height:27px;padding:0 8px;display:flex;align-items:center;justify-content:center;border-radius:999px;background:rgba(240,113,107,.12);color:var(--todo);font-size:12px;font-weight:800;}
+  .attention-count.clear{background:rgba(53,194,160,.12);color:var(--done);}
+  .attention-list{display:grid;gap:7px;}
+  .attention-item{display:flex;align-items:flex-start;gap:10px;padding:10px 11px;background:var(--card);border:1px solid var(--card-border);border-radius:12px;}
+  .attention-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex:0 0 auto;background:var(--progress);}
+  .attention-dot.urgent{background:var(--todo);}
+  .attention-dot.info{background:var(--money);}
+  .attention-dot.ok{background:var(--done);}
+  .attention-copy{min-width:0;flex:1;}
+  .attention-copy strong{display:block;font-size:12px;line-height:1.35;color:var(--text-main);}
+  .attention-copy span{display:block;font-size:11px;line-height:1.45;color:var(--text-dim);margin-top:2px;}
+  @media(max-width:380px){.personal-greeting-main{font-size:17px}.personal-greeting{padding:14px 15px}.attention-card{padding:13px}}
   .finance-hero{display:block!important;background:linear-gradient(165deg,#292d33 0%,#1e2126 65%);border:1px solid #454a51;border-radius:24px;padding:22px 18px 16px;box-shadow:0 12px 30px rgba(0,0,0,.2);margin-bottom:18px}
   .finance-hero-top{text-align:center}.eyebrow{display:block;color:#c3c6cb;font-size:13px;font-weight:700;letter-spacing:.03em}.finance-hero-top>strong{display:block;font-size:32px;line-height:1.1;letter-spacing:-.035em;margin:8px 0 9px;color:#fff}.hero-status{font-size:13px;color:#bfc3c8;display:flex;align-items:center;justify-content:center;gap:7px}.status-dot{width:9px;height:9px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 3px rgba(71,199,166,.12)}
   .finance-divider{height:1px;background:#454a51;margin:20px 0 16px}.finance-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.finance-item{text-align:center!important;padding:0!important;background:transparent!important;border:0!important;min-width:0}.finance-item span{display:block;color:#aeb2b8;font-size:11px;margin-bottom:5px;white-space:nowrap}.finance-item strong{display:block;color:#fff!important;font-size:13px;line-height:1.25;overflow-wrap:anywhere}.finance-crossing strong{font-size:12px;color:#fff!important}
@@ -590,6 +613,23 @@ body{
     <h1>Monitoring Pagu &amp; Kas</h1>
     <p>Ringkasan Finansial</p>
   </div>
+
+
+  <section class="personal-dashboard" id="personalDashboard" aria-label="Ringkasan personal">
+    <div class="personal-greeting">
+      <div class="personal-greeting-main" id="personalGreeting">Selamat datang 👋</div>
+      <div class="personal-greeting-sub" id="personalGreetingSub">Ringkasan kondisi kerja hari ini.</div>
+    </div>
+    <div class="attention-card" id="attentionCard">
+      <div class="attention-head">
+        <div class="attention-title-wrap"><span class="attention-icon">⚑</span><span class="attention-title">Perlu Perhatian</span></div>
+        <span class="attention-count clear" id="attentionCount">0</span>
+      </div>
+      <div class="attention-list" id="attentionList">
+        <div class="attention-item"><span class="attention-dot ok"></span><div class="attention-copy"><strong>Memuat ringkasan...</strong><span>Data akan tampil setelah tersambung.</span></div></div>
+      </div>
+    </div>
+  </section>
 
   <section class="finance-hero" id="financeBar" aria-label="Ringkasan finansial">
     <div class="finance-hero-top">
@@ -1105,6 +1145,10 @@ const firebaseConfig = {
   const currentUserLabel = document.getElementById('currentUserLabel');
   const currentUserName = document.getElementById('currentUserName');
   const currentUserAvatar = document.getElementById('currentUserAvatar');
+  const personalGreeting = document.getElementById('personalGreeting');
+  const personalGreetingSub = document.getElementById('personalGreetingSub');
+  const attentionCount = document.getElementById('attentionCount');
+  const attentionList = document.getElementById('attentionList');
 
   const filterProjectInput = document.getElementById('filterProjectInput');
   const btnClearSearch = document.getElementById('btnClearSearch');
@@ -1617,11 +1661,85 @@ const firebaseConfig = {
     return { projectsToShow, txByProject };
   }
 
+
+
+  function greetingByHour(){
+    const h = new Date().getHours();
+    if (h < 11) return 'Selamat pagi';
+    if (h < 15) return 'Selamat siang';
+    if (h < 18) return 'Selamat sore';
+    return 'Selamat malam';
+  }
+
+  function roleGreetingText(){
+    const map = {
+      direktur: 'Berikut kondisi utama yang perlu Anda pantau hari ini.',
+      komisaris: 'Berikut ringkasan kondisi perusahaan yang perlu diperhatikan.',
+      finance: 'Berikut kondisi kas dan pekerjaan yang perlu diperhatikan.',
+      admin: 'Berikut pekerjaan administrasi yang perlu diperhatikan.',
+      manager: 'Berikut aktivitas proyek yang perlu diperhatikan.',
+      pic: 'Berikut aktivitas proyek yang perlu diperhatikan.'
+    };
+    return map[currentRole] || 'Berikut ringkasan kondisi kerja hari ini.';
+  }
+
+  function renderPersonalDashboard(){
+    if (!personalGreeting || !attentionList || !currentRole) return;
+    const displayName = (currentUserNameValue || '').trim() || 'Pengguna';
+    personalGreeting.textContent = `${greetingByHour()}, ${displayName} 👋`;
+    personalGreetingSub.textContent = roleGreetingText();
+
+    const today = todayStr();
+    const unfinished = transactions.filter(t => t.status !== 'selesai' && t.deleteRequested !== true);
+    const overdue = unfinished.filter(t => (t.date || '').substring(0,10) && (t.date || '').substring(0,10) < today);
+    const dueToday = unfinished.filter(t => (t.date || '').substring(0,10) === today);
+    const pendingDelete = transactions.filter(t => t.deleteRequested === true);
+
+    const allTxByProject = {};
+    transactions.forEach(t => {
+      if (!allTxByProject[t.projectId]) allTxByProject[t.projectId] = [];
+      allTxByProject[t.projectId].push(t);
+    });
+    const debtProjects = projects.filter(p => computeProjectAgg(p, allTxByProject[p.id] || []).crossingState === 'terhutang');
+
+    const items = [];
+    if (currentRole === 'direktur' && pendingDelete.length){
+      items.push({kind:'urgent', title:`${pendingDelete.length} permintaan hapus menunggu keputusan`, detail:'Buka menu Approval untuk memeriksa dan memberi keputusan.'});
+    }
+    if (overdue.length){
+      items.push({kind:'urgent', title:`${overdue.length} aktivitas melewati jadwal`, detail:'Statusnya belum selesai dan tanggal pelaksanaannya sudah lewat.'});
+    }
+    if (dueToday.length){
+      items.push({kind:'info', title:`${dueToday.length} aktivitas dijadwalkan hari ini`, detail:'Periksa progresnya agar status tetap terbarui.'});
+    }
+    if (currentRole !== 'admin' && debtProjects.length){
+      items.push({kind:'warning', title:`${debtProjects.length} proyek masih berstatus Terhutang DP`, detail:'Kas masuk belum menutup kebutuhan crossing proyek tersebut.'});
+    }
+    if ((currentRole === 'admin' || currentRole === 'finance') && pendingDelete.length){
+      const mine = pendingDelete.filter(t => t.requestedBy === currentRole).length;
+      if (mine) items.push({kind:'info', title:`${mine} permintaan hapus Anda masih menunggu`, detail:'Menunggu keputusan Direktur pada menu Approval.'});
+    }
+
+    const visibleItems = items.slice(0,4);
+    attentionCount.textContent = String(items.length);
+    attentionCount.classList.toggle('clear', items.length === 0);
+
+    if (!visibleItems.length){
+      attentionList.innerHTML = `<div class="attention-item"><span class="attention-dot ok"></span><div class="attention-copy"><strong>Semua terlihat terkendali</strong><span>Tidak ada hal mendesak dari data yang tersedia saat ini.</span></div></div>`;
+      return;
+    }
+    attentionList.innerHTML = visibleItems.map(item => {
+      const dotClass = item.kind === 'urgent' ? 'urgent' : (item.kind === 'info' ? 'info' : '');
+      return `<div class="attention-item"><span class="attention-dot ${dotClass}"></span><div class="attention-copy"><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.detail)}</span></div></div>`;
+    }).join('');
+  }
+
   // ===================== RENDER =====================
   function render(){
     if (!currentRole) return;
     todayDateEl.textContent = fmtDateDisplay(todayStr());
     applyRolePermissions();
+    renderPersonalDashboard();
 
     const existingKegiatan = [...new Set(projects.map(p => p.subKegiatan).filter(Boolean))];
     kegiatanDataList.innerHTML = existingKegiatan.map(k => `<option value="${escapeHtml(k)}"></option>`).join('');
