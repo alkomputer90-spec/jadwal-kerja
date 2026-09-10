@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- V5.9.1 Mobile UI QA Hardened — role testing fixes + visible write errors; data model/auth flow unchanged -->
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -577,507 +576,6 @@ body{
 @media(max-width:620px){.exec-grid{grid-template-columns:1fr 1fr}.exec-owner-row{grid-template-columns:1fr}.exec-score{font-size:19px}}
 
 </style>
-
-<style id="v57-mobile-responsive-ui">
-/* =========================================================
-   V5.7 — Mobile Responsive UI
-   Visual-only responsive layer. Firebase/Auth/Rules/data flow untouched.
-   Desktop layout remains unchanged; overrides apply only to <=700px.
-   ========================================================= */
-@media (max-width:700px){
-  html{background:#0d1117;}
-  body{
-    background:
-      radial-gradient(circle at 50% -120px, rgba(27,163,184,.11), transparent 340px),
-      #0d1117;
-    color:#f4f7f9;
-    padding-bottom:calc(86px + env(safe-area-inset-bottom));
-  }
-
-  /* App top bar */
-  .app-header{padding:13px 14px 0;overflow:visible;}
-  .profile-row{margin:0 0 15px;min-height:42px;gap:8px;}
-  .profile-identity{gap:9px;}
-  .avatar{
-    width:38px;height:38px;flex:0 0 38px;border-width:2px;
-    font-size:11px;background:#dbe8f5;color:#0c1720;box-shadow:none;
-  }
-  .profile-name{font-size:14px;font-weight:800;letter-spacing:-.01em;}
-  .profile-meta{font-size:10.5px;margin-top:2px;gap:4px;}
-  .profile-dot{font-size:9px;}
-  .conn{font-size:10.5px;}
-  .profile-actions{gap:2px;}
-  .icon-control{width:38px;height:38px;border-radius:11px;font-size:18px;color:#bdc7d1;}
-  #btnSettingsVisual{display:none;}
-
-  /* Product title becomes compact mobile brand header */
-  .page-heading{margin:0 0 11px;}
-  .page-heading h1{
-    margin:0;color:#eef6f8;font-size:14px;line-height:1.2;
-    font-weight:800;letter-spacing:-.01em;
-  }
-  .page-heading p{display:none;}
-
-  /* Greeting: clean, flat, executive */
-  .personal-dashboard{gap:11px;margin:0 0 13px;}
-  .personal-greeting{
-    padding:8px 1px 10px;background:transparent;border:0;border-radius:0;
-  }
-  .personal-greeting-main{font-size:23px;line-height:1.12;font-weight:850;letter-spacing:-.025em;}
-  .personal-greeting-sub{font-size:12px;color:#93a3b1;margin-top:5px;}
-
-  /* Decision / attention card */
-  .attention-card{
-    padding:13px;background:linear-gradient(145deg,rgba(116,32,38,.28),rgba(39,19,24,.35));
-    border:1px solid rgba(239,99,99,.35);border-radius:15px;
-  }
-  .attention-head{margin-bottom:8px;}
-  .attention-title-wrap{gap:8px;}
-  .attention-icon{
-    width:27px;height:27px;border-radius:9px;background:rgba(239,99,99,.13);
-    color:#ff7272;font-size:13px;
-  }
-  .attention-title{font-size:13px;color:#ff7777;}
-  .attention-count{height:24px;min-width:24px;font-size:10px;}
-  .attention-list{gap:6px;}
-  .attention-item{
-    padding:9px 10px;background:rgba(12,17,23,.45);
-    border-color:rgba(239,99,99,.20);border-radius:10px;
-  }
-  .attention-copy strong{font-size:11.5px;}
-  .attention-copy span{font-size:10.5px;}
-
-  /* Financial dashboard -> KPI card grid */
-  .finance-hero{
-    display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;
-    padding:0;margin:0 0 11px;background:transparent!important;border:0!important;
-    border-radius:0!important;box-shadow:none!important;
-  }
-  .finance-hero-top,
-  .finance-item{
-    min-height:88px;padding:12px!important;text-align:left!important;
-    border:1px solid #263441!important;border-radius:13px!important;
-    background:linear-gradient(145deg,#121b24,#10171f)!important;
-  }
-  .finance-hero-top{display:flex;flex-direction:column;justify-content:center;}
-  .eyebrow,.finance-item span{
-    color:#a6b6c4!important;font-size:10.5px!important;font-weight:600!important;
-    letter-spacing:0!important;margin:0 0 7px!important;text-transform:none;
-  }
-  .finance-hero-top>strong{
-    margin:0!important;font-size:20px!important;line-height:1.08!important;
-    font-weight:850!important;letter-spacing:-.025em!important;color:#fff!important;
-  }
-  .hero-status{justify-content:flex-start;margin-top:7px;font-size:9.5px;color:#6bd4b4;}
-  .status-dot{width:6px;height:6px;box-shadow:none;}
-  .finance-divider{display:none!important;}
-  .finance-metrics{display:contents!important;}
-  .finance-item{display:flex!important;flex-direction:column;justify-content:center;min-width:0;}
-  .finance-item strong{font-size:16px!important;line-height:1.14!important;font-weight:800!important;overflow-wrap:anywhere;}
-  .finance-crossing{grid-column:1/-1;min-height:68px!important;}
-  .finance-crossing strong{font-size:14px!important;}
-  .crossing-summary-card{
-    grid-column:1/-1;margin:-4px 0 0!important;padding:0 2px!important;
-    font-size:9.5px!important;text-align:left!important;color:#8393a1!important;
-  }
-
-  /* Portfolio health summary */
-  .summary{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:0 0 13px;
-    background:#111922;border:1px solid #263441;border-radius:14px;overflow:hidden;
-  }
-  .summary-chip{
-    min-width:0;border:0;border-right:1px solid #263441;border-radius:0;
-    background:transparent;padding:12px 5px;text-align:center;
-  }
-  .summary-chip:last-child{border-right:0;}
-  .summary-chip .num{font-size:21px;}
-  .summary-chip .lbl{font-size:9.5px;margin-top:5px;white-space:normal;}
-
-  /* Search and filters */
-  .search-toolbar{gap:7px;margin:0 0 9px;}
-  .search-wrap input{
-    height:44px;border-radius:11px;background:#111922;border-color:#2b3a48;
-    padding:0 36px 0 40px;font-size:12px;
-  }
-  .search-glyph{left:12px;font-size:20px;}
-  .btn-clear-search{right:7px;}
-  .filter-toggle{width:44px;height:44px;border-radius:11px;background:#172330;border-color:#314250;}
-  .advanced-filters{border-radius:12px;padding:10px;margin-bottom:9px;}
-
-  /* Status chips become a mobile filter rail */
-  .tabs{
-    margin:0!important;padding:0 14px 11px!important;gap:7px!important;
-    background:transparent!important;border-radius:0!important;
-  }
-  .tab{
-    min-height:36px!important;padding:0 12px!important;font-size:10.5px!important;
-    border-radius:9px!important;background:#15202a!important;border-color:#2d3b47!important;
-  }
-  .tab.active{background:#0f6c72!important;border-color:#1bb4bd!important;color:#fff!important;}
-
-  .approval-banner{margin:0 14px 10px;border-radius:12px;}
-  .section-label{
-    padding:2px 14px 8px;color:#8fa0ad;font-size:10px;letter-spacing:.07em;
-  }
-
-  /* Project list cards: compact mobile portfolio */
-  .list{padding:0 14px calc(104px + env(safe-area-inset-bottom));gap:9px;}
-  .project-card{
-    border:1px solid #283744!important;border-left:1px solid #283744!important;
-    border-radius:14px!important;background:linear-gradient(145deg,#111a23,#0f161d)!important;
-    padding-left:0!important;overflow:hidden;
-  }
-  .project-card::before{display:none!important;}
-  .project-card-header{padding:13px 12px 12px;gap:8px;align-items:flex-start;}
-  .project-card-title-wrap{padding-right:2px;}
-  .project-card-code{font-size:13.5px!important;line-height:1.25!important;}
-  .project-card-sub{font-size:11px!important;line-height:1.35!important;margin-top:3px!important;color:#a3b1bd!important;}
-  .rag-badge{
-    margin-top:8px!important;padding:4px 8px!important;font-size:9px!important;
-    background:#18242d!important;border-radius:999px!important;
-  }
-  .project-card-actions{gap:5px;align-items:center;}
-  .btn-manage-project{
-    height:32px;padding:0 9px;border-radius:9px;font-size:10.5px;background:#182531;border-color:#334653;
-  }
-  .btn-manage-project .dots{font-size:14px;}
-  .project-card-actions .chevron::after{content:'›';font-size:22px;color:#9fb0bc;font-weight:500;}
-  .project-card-body-wrap{
-    padding:0 11px 12px;border-top:1px solid #25333e;
-    background:rgba(7,11,15,.12);
-  }
-  .card-pagu-info,.card-finance-row{
-    background:#0d151c!important;border-color:#273642!important;border-radius:11px!important;
-  }
-  .trx-row{background:#0d151c!important;border-color:#273642!important;border-radius:11px!important;}
-  .btn-add-trx{min-height:42px;border-radius:10px;}
-
-  /* Manage menu: fit safely on a phone */
-  .project-manage-wrap{position:relative;}
-  .project-action-menu{
-    right:0;top:37px;width:min(270px,calc(100vw - 44px));
-    border-radius:12px;background:#18212a;border-color:#3b4a57;
-    box-shadow:0 18px 45px rgba(0,0,0,.52);
-  }
-  .project-action-item{padding:10px;border-radius:8px;}
-  .project-action-item strong{font-size:11px;}
-  .project-action-item small{font-size:9.5px;}
-  .project-action-item .pa-icon{font-size:12px;color:#aab8c4;}
-
-  /* Modal/sheet becomes a native-feeling mobile bottom sheet */
-  .overlay{align-items:flex-end!important;padding:0!important;background:rgba(0,0,0,.68)!important;}
-  .sheet{
-    width:100%!important;max-width:none!important;max-height:92dvh!important;
-    border-radius:22px 22px 0 0!important;padding:19px 15px calc(15px + env(safe-area-inset-bottom))!important;
-    border-left:1px solid #394854!important;border-right:1px solid #394854!important;border-top:1px solid #394854!important;
-  }
-  .sheet h2{font-size:18px;}
-  .sheet .sheet-sub{font-size:11px;}
-  .field input[type="text"],.field input[type="date"],.field input[type="number"],.field select,.field textarea{
-    min-height:44px;border-radius:10px;font-size:13px;
-  }
-  .grid-2{gap:8px;}
-  .sheet-actions{gap:8px;}
-  .btn{min-height:45px;border-radius:10px;font-size:13px;}
-
-  /* Bottom app navigation */
-  .bottom-nav{
-    height:72px;padding:5px 7px calc(5px + env(safe-area-inset-bottom));
-    grid-template-columns:repeat(5,1fr)!important;background:rgba(9,14,19,.96);
-    border-top:1px solid #263440;backdrop-filter:blur(18px);z-index:900;
-  }
-  .bottom-nav-item{min-height:52px;gap:3px;border-radius:9px;}
-  .bottom-nav-item span{font-size:18px;}
-  .bottom-nav-item small{font-size:8.5px;letter-spacing:.01em;}
-  .bottom-nav-item.active{color:#22c7cf;background:rgba(34,199,207,.07);}
-  .nav-badge{transform:scale(.88);}
-
-  .fab{
-    width:52px;height:52px;right:16px;bottom:calc(84px + env(safe-area-inset-bottom));
-    font-size:25px;border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,.45);
-  }
-  .back-to-view-btn{margin:0 14px 10px;}
-}
-
-@media (max-width:390px){
-  .personal-greeting-main{font-size:21px;}
-  .finance-hero-top,.finance-item{min-height:82px;padding:11px!important;}
-  .finance-hero-top>strong{font-size:18px!important;}
-  .finance-item strong{font-size:14px!important;}
-  .project-card-header{padding:12px 10px 11px;}
-  .btn-manage-project{padding:0 8px;}
-}
-</style>
-
-
-<style id="v58-mobile-enterprise-ui">
-/* =========================================================
-   V5.8 — Mobile Enterprise UI
-   Mobile-only composition layer. Firebase/Auth/Rules/schema untouched.
-   ========================================================= */
-.mobile-section-head,.mobile-project-page-head,.mobile-project-overview,.mobile-detail-tabs{display:none;}
-@media (max-width:700px){
-  :root{--v58-bg:#071019;--v58-surface:#0d1822;--v58-surface2:#101e29;--v58-border:#203440;--v58-cyan:#20c6cf;--v58-muted:#8ea4b3;}
-  body{background:radial-gradient(circle at 50% -80px,rgba(20,128,150,.14),transparent 300px),var(--v58-bg)!important;}
-  .app-header{padding:14px 16px 0!important;}
-  .profile-row{min-height:48px;margin:0 0 20px!important;align-items:center!important;}
-  .profile-row::before{content:'▰  Monitoring\A     Pagu & Kas';white-space:pre;color:#f5f9fb;font-size:12px;line-height:1.1;font-weight:850;letter-spacing:-.01em;}
-  .profile-identity{margin-left:auto!important;order:2;}
-  .profile-identity .profile-copy{display:none!important;}
-  .avatar{width:36px!important;height:36px!important;flex-basis:36px!important;border-color:#8fc9d2!important;font-size:10px!important;}
-  .profile-actions{order:3;margin-left:7px!important;}
-  .profile-actions .icon-control{width:34px!important;height:34px!important;background:transparent!important;border:0!important;color:#a9b8c4!important;}
-  #btnSettingsVisual{display:none!important;}
-  #btnLogout{font-size:17px!important;}
-  .page-heading{margin:0 0 8px!important;}
-  .page-heading h1{display:block!important;font-size:11px!important;color:var(--v58-cyan)!important;text-transform:none!important;letter-spacing:.02em!important;margin:0 0 9px!important;}
-  .page-heading h1{font-size:0!important;}
-  .page-heading h1::after{content:'Executive Overview';font-size:11px!important;}
-  .personal-greeting{padding:0 0 15px!important;}
-  .personal-greeting-main{font-size:27px!important;line-height:1.08!important;}
-  .personal-greeting-sub{font-size:12px!important;color:var(--v58-muted)!important;}
-  .personal-dashboard{gap:13px!important;margin-bottom:13px!important;}
-
-  /* Executive KPI cards */
-  .finance-hero{gap:8px!important;margin-bottom:13px!important;}
-  .finance-hero-top,.finance-item{min-height:92px!important;padding:13px!important;border-color:var(--v58-border)!important;background:linear-gradient(145deg,#0f1d28,#0b151e)!important;border-radius:12px!important;}
-  .eyebrow,.finance-item span{font-size:10px!important;color:#9cb0be!important;margin-bottom:8px!important;}
-  .finance-hero-top>strong{font-size:19px!important;white-space:normal!important;overflow-wrap:anywhere!important;}
-  .finance-item strong{font-size:15px!important;white-space:normal!important;overflow-wrap:anywhere!important;}
-  .finance-crossing{grid-column:auto!important;min-height:92px!important;}
-  .crossing-summary-card{grid-column:1/-1!important;background:transparent!important;padding:0 3px!important;margin:0!important;}
-
-  /* Decision center */
-  .attention-card{border-radius:13px!important;padding:13px!important;background:linear-gradient(145deg,rgba(89,24,31,.46),rgba(31,14,20,.55))!important;border-color:rgba(226,76,87,.37)!important;}
-  .attention-title{font-size:12px!important;font-weight:850!important;}
-  .attention-item{padding:10px!important;border-radius:9px!important;}
-
-  /* Portfolio health */
-  .mobile-section-head{display:flex;align-items:center;justify-content:space-between;margin:15px 0 0;padding:12px 1px 9px;}
-  .mobile-section-head>div{display:flex;flex-direction:column;gap:2px;}
-  .mobile-section-head strong{font-size:13px;color:#f3f7f9;}
-  .mobile-section-head span{font-size:9px;color:#8298a8;}
-  .mobile-section-head button{border:0;background:transparent;color:var(--v58-cyan);font:inherit;font-size:10px;font-weight:700;padding:7px 0;}
-  .summary{border-color:var(--v58-border)!important;border-radius:12px!important;background:#0c1721!important;margin-bottom:16px!important;}
-  .summary-chip{padding:14px 5px!important;border-right-color:var(--v58-border)!important;}
-  .summary-chip .num{font-size:22px!important;}
-  .summary-chip .lbl{font-size:8.5px!important;}
-
-  /* True mobile view states */
-  body.mobile-view-dashboard .search-toolbar,
-  body.mobile-view-dashboard .advanced-filters,
-  body.mobile-view-dashboard #tabsBar,
-  body.mobile-view-dashboard .approval-banner,
-  body.mobile-view-dashboard .section-label,
-  body.mobile-view-dashboard #list,
-  body.mobile-view-dashboard .mobile-project-page-head{display:none!important;}
-  body.mobile-view-dashboard .fab{display:none!important;}
-
-  body.mobile-view-projects .page-heading,
-  body.mobile-view-projects .personal-dashboard,
-  body.mobile-view-projects #financeBar,
-  body.mobile-view-projects .mobile-health-head,
-  body.mobile-view-projects #summary{display:none!important;}
-  body.mobile-view-projects .mobile-project-page-head{display:block!important;padding:0 16px 10px;}
-  .mobile-project-page-head>div{display:flex;flex-direction:column;gap:3px;}
-  .mobile-project-page-head span{font-size:10px;color:var(--v58-cyan);font-weight:750;}
-  .mobile-project-page-head strong{font-size:24px;color:#f5f8fa;line-height:1.1;}
-  .mobile-project-page-head small{font-size:10px;color:#8ba0af;}
-  body.mobile-view-projects .search-toolbar{margin:0 16px 9px!important;}
-  body.mobile-view-projects #tabsBar{padding-left:16px!important;padding-right:16px!important;overflow-x:auto!important;flex-wrap:nowrap!important;scrollbar-width:none;}
-  body.mobile-view-projects #tabsBar::-webkit-scrollbar{display:none;}
-  body.mobile-view-projects .section-label{padding-left:16px!important;}
-  body.mobile-view-projects #list{padding-left:16px!important;padding-right:16px!important;}
-  body.mobile-view-projects .fab{display:flex!important;}
-
-  body.mobile-view-cash .page-heading,
-  body.mobile-view-cash .personal-dashboard,
-  body.mobile-view-cash .mobile-health-head,
-  body.mobile-view-cash #summary,
-  body.mobile-view-cash .search-toolbar,
-  body.mobile-view-cash .advanced-filters,
-  body.mobile-view-cash #tabsBar,
-  body.mobile-view-cash .approval-banner,
-  body.mobile-view-cash .section-label,
-  body.mobile-view-cash #list,
-  body.mobile-view-cash .mobile-project-page-head{display:none!important;}
-  body.mobile-view-cash #financeBar{margin:10px 16px!important;}
-  body.mobile-view-cash #financeBar::before{content:'Cash Position';grid-column:1/-1;font-size:22px;font-weight:850;color:#f5f8fa;margin-bottom:2px;}
-  body.mobile-view-cash .fab{display:none!important;}
-
-  /* Project cards now read like mobile portfolio rows */
-  .project-card{border-radius:13px!important;background:linear-gradient(145deg,#0e1a24,#0b151e)!important;border-color:var(--v58-border)!important;}
-  .project-card-header{padding:13px!important;}
-  .project-card-code{font-size:13px!important;color:#f5f8fa!important;}
-  .project-card-sub{font-size:11px!important;color:#96aab8!important;max-width:235px;}
-  .rag-badge{display:none!important;}
-  .mobile-project-overview{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px 8px;align-items:center;margin-top:11px;}
-  .mobile-project-progress{display:grid;grid-template-columns:32px minmax(70px,1fr);gap:7px;align-items:center;}
-  .mobile-project-progress>strong{font-size:10px;color:#dfe9ee;}
-  .mobile-progress-track{height:6px;background:#2a3c4b;border-radius:99px;overflow:hidden;}
-  .mobile-progress-track i{display:block;height:100%;background:#24c8d0;border-radius:99px;}
-  .mobile-health{font-size:8.5px;font-weight:800;padding:4px 7px;border-radius:99px;white-space:nowrap;}
-  .mobile-health.ontrack{background:rgba(50,191,118,.17);color:#5fe39d;}
-  .mobile-health.atrisk{background:rgba(240,181,57,.17);color:#ffc857;}
-  .mobile-health.critical{background:rgba(236,79,89,.17);color:#ff777f;}
-  .mobile-project-value{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;padding-top:2px;}
-  .mobile-project-value span{font-size:9px;color:#8096a5;}
-  .mobile-project-value strong{font-size:10.5px;color:#e5edf1;}
-  .btn-manage-project{height:30px!important;padding:0 8px!important;font-size:9.5px!important;}
-  .project-card-actions .chevron::after{font-size:20px!important;}
-
-  /* Expanded project = compact project workspace with tabs */
-  .mobile-detail-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:0 -11px 12px;border-bottom:1px solid #263844;overflow-x:auto;}
-  .mobile-detail-tabs button{border:0;background:transparent;color:#8ea2b0;font:inherit;font-size:9px;font-weight:700;padding:11px 3px 9px;border-bottom:2px solid transparent;}
-  .mobile-detail-tabs button.active{color:var(--v58-cyan);border-bottom-color:var(--v58-cyan);}
-  .exec-director{padding-top:0!important;}
-  .exec-health{border-radius:11px!important;background:#101d27!important;border-color:#273b48!important;}
-  .exec-score{font-size:23px!important;}
-  .exec-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;}
-  .exec-box{border-radius:10px!important;background:#0d1821!important;border-color:#263945!important;padding:10px!important;}
-  .exec-box span{font-size:8px!important;}.exec-box strong{font-size:11px!important;}.exec-box small{font-size:8px!important;}
-  .exec-section{border-radius:10px!important;}
-  .exec-owner-row{grid-template-columns:1fr!important;}
-
-  .project-card[data-detail-tab="summary"] .exec-grid,
-  .project-card[data-detail-tab="summary"] .exec-owner-row,
-  .project-card[data-detail-tab="summary"] .exec-detail-head,
-  .project-card[data-detail-tab="summary"] .trx-list,
-  .project-card[data-detail-tab="summary"] .btn-add-trx{display:none!important;}
-  .project-card[data-detail-tab="finance"] .exec-health,
-  .project-card[data-detail-tab="finance"] .exec-section,
-  .project-card[data-detail-tab="finance"] .exec-owner-row,
-  .project-card[data-detail-tab="finance"] .exec-detail-head,
-  .project-card[data-detail-tab="finance"] .trx-list,
-  .project-card[data-detail-tab="finance"] .btn-add-trx{display:none!important;}
-  .project-card[data-detail-tab="activities"] .exec-health,
-  .project-card[data-detail-tab="activities"] .exec-grid,
-  .project-card[data-detail-tab="activities"] .exec-section,
-  .project-card[data-detail-tab="activities"] .exec-owner-row{display:none!important;}
-  .project-card[data-detail-tab="team"] .exec-health,
-  .project-card[data-detail-tab="team"] .exec-grid,
-  .project-card[data-detail-tab="team"] .exec-section,
-  .project-card[data-detail-tab="team"] .exec-detail-head,
-  .project-card[data-detail-tab="team"] .trx-list,
-  .project-card[data-detail-tab="team"] .btn-add-trx{display:none!important;}
-
-  /* App navigation */
-  .bottom-nav{height:74px!important;background:rgba(7,14,20,.97)!important;border-top-color:#20323e!important;}
-  .bottom-nav-item{border-radius:9px!important;}
-  .bottom-nav-item.active{background:rgba(31,198,207,.08)!important;color:#26cad2!important;}
-}
-</style>
-
-
-<style id="v59-mobile-consistency-polish">
-/* =========================================================
-   V5.9 — Mobile UI Consistency & Polish
-   Mobile-only presentation. Firebase/Auth/Rules/schema untouched.
-   ========================================================= */
-@media (max-width:700px){
-  :root{--v59-bg:#07111a;--v59-panel:#0d1923;--v59-panel2:#101f2b;--v59-border:#213540;--v59-accent:#23c7cf;--v59-text:#f4f8fa;--v59-muted:#90a4b2;}
-  body{background:linear-gradient(180deg,#071520 0,#071019 32%,#061019 100%)!important;color:var(--v59-text);}
-  .app-header{padding:16px 16px 0!important;}
-  .profile-row{margin-bottom:22px!important;}
-  .profile-row::before{content:'—  Monitoring\A     Pagu & Kas'!important;font-size:12px!important;letter-spacing:.01em!important;}
-  .page-heading,.personal-dashboard,#financeBar,.mobile-health-head,#summary,.search-toolbar,#tabsBar,.section-label,#list{max-width:680px;margin-left:auto!important;margin-right:auto!important;}
-  .personal-greeting-main{font-size:25px!important;letter-spacing:-.025em;}
-  .personal-greeting-sub{font-size:11px!important;line-height:1.5!important;}
-  .attention-card{box-shadow:0 14px 35px rgba(0,0,0,.16)!important;}
-  .attention-title{letter-spacing:.01em;}
-  .finance-hero{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
-  .finance-hero-top,.finance-item{min-height:86px!important;padding:12px 12px 11px!important;}
-  .finance-hero-top>strong{font-size:18px!important;line-height:1.18!important;}
-  .finance-item strong{font-size:14px!important;line-height:1.2!important;}
-  .crossing-summary-card{font-size:9px!important;color:#8ca0ae!important;}
-  .summary{overflow:hidden!important;}
-
-  /* Project list: denser and more executive */
-  body.mobile-view-projects .search-toolbar{position:sticky;top:0;z-index:40;background:linear-gradient(180deg,#071520 75%,rgba(7,21,32,0));padding-top:5px;padding-bottom:8px;}
-  body.mobile-view-projects .project-card{margin-bottom:10px!important;}
-  .project-card-header{padding:12px!important;align-items:flex-start!important;}
-  .project-card-code{font-size:12px!important;line-height:1.32!important;}
-  .project-card-sub{font-size:10px!important;line-height:1.35!important;margin-top:3px;}
-  .mobile-project-overview{margin-top:9px!important;gap:7px!important;}
-  .mobile-project-value{border-top:1px solid rgba(72,101,118,.22);padding-top:8px!important;margin-top:1px;}
-  .project-card-actions{gap:6px!important;}
-  .btn-manage-project{border-radius:9px!important;background:#122430!important;border-color:#2a424f!important;}
-  .project-action-menu{position:fixed!important;left:16px!important;right:16px!important;top:auto!important;bottom:88px!important;width:auto!important;max-width:none!important;border-radius:15px!important;padding:8px!important;background:#101a23!important;box-shadow:0 24px 60px rgba(0,0,0,.55)!important;}
-
-  /* Dedicated project detail screen */
-  .mobile-detail-screen-head{display:none;}
-  .project-card.is-expanded{position:fixed!important;inset:0!important;z-index:1200!important;margin:0!important;border:0!important;border-radius:0!important;background:linear-gradient(180deg,#081722,#071019)!important;overflow:auto!important;padding:0 16px calc(34px + env(safe-area-inset-bottom))!important;}
-  .project-card.is-expanded>.project-card-header{display:none!important;}
-  .project-card.is-expanded>.project-card-body-wrap{display:block!important;padding:0!important;}
-  .project-card.is-expanded .mobile-detail-screen-head{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:10px;align-items:center;position:sticky;top:0;z-index:30;margin:0 -16px;padding:14px 16px 12px;background:rgba(7,17,26,.97);border-bottom:1px solid #1f3440;}
-  .mobile-detail-back{width:34px;height:34px;border:1px solid #29404d;border-radius:10px;background:#0e1b25;color:#eef6f8;font:inherit;font-size:24px;line-height:1;}
-  .mobile-detail-screen-head>div:nth-child(2){min-width:0;display:flex;flex-direction:column;gap:2px;}
-  .mobile-detail-screen-head span{font-size:9px;color:#7fdde2;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .mobile-detail-screen-head strong{font-size:13px;line-height:1.25;color:#f5f8fa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .mobile-detail-screen-head small{font-size:8.5px;color:#8197a6;}
-  .mobile-detail-manage{height:32px;padding:0 9px;border:1px solid #29404d;border-radius:9px;background:#10212c;color:#e7f0f3;font:inherit;font-size:9px;font-weight:800;}
-  .project-card.is-expanded .mobile-detail-tabs{position:sticky;top:61px;z-index:25;margin:0 -16px 14px!important;padding:0 12px;background:#08141d;border-bottom:1px solid #203440;}
-  .project-card.is-expanded .mobile-detail-tabs button{font-size:9.5px!important;padding:12px 4px 10px!important;}
-  .project-card.is-expanded .exec-health{margin-top:2px;}
-  .project-card.is-expanded .exec-section{padding:12px!important;}
-  .project-card.is-expanded .exec-section-title{font-size:9px!important;}
-  .project-card.is-expanded .exec-line{font-size:10px!important;line-height:1.55!important;}
-  .project-card.is-expanded .trx-row{border-radius:11px!important;margin-bottom:9px!important;background:#0d1821!important;border:1px solid #213540!important;padding:11px!important;}
-  .project-card.is-expanded .trx-title{font-size:11px!important;line-height:1.35!important;}
-  .project-card.is-expanded .trx-date{font-size:8.5px!important;}
-  .project-card.is-expanded .trx-nextplan,.project-card.is-expanded .trx-notes{font-size:9px!important;line-height:1.5!important;border-radius:8px!important;}
-
-  /* Cash: add compact framing and remove the 'unfinished empty page' feeling */
-  body.mobile-view-cash #financeBar{align-content:start;min-height:calc(100vh - 190px);padding-bottom:24px;}
-  body.mobile-view-cash #financeBar::after{content:'Ringkasan posisi kas berdasarkan data proyek yang tersimpan.';grid-column:1/-1;color:#708897;font-size:9px;line-height:1.45;margin:4px 4px 0;}
-
-  /* Activity Log becomes a clean timeline */
-  body.mobile-view-log .page-heading,body.mobile-view-log .personal-dashboard,body.mobile-view-log #financeBar,body.mobile-view-log .mobile-health-head,body.mobile-view-log #summary,body.mobile-view-log .search-toolbar,body.mobile-view-log .advanced-filters,body.mobile-view-log #tabsBar,body.mobile-view-log .approval-banner,body.mobile-view-log .mobile-project-page-head{display:none!important;}
-  body.mobile-view-log .section-label{display:block!important;padding:8px 16px 7px!important;font-size:0!important;}
-  body.mobile-view-log .section-label::before{content:'Activity Log';display:block;font-size:23px;color:#f5f8fa;font-weight:850;letter-spacing:-.02em;}
-  body.mobile-view-log .section-label::after{content:'Riwayat pembaruan proyek terbaru';display:block;font-size:9.5px;color:#8298a8;font-weight:500;margin-top:3px;text-transform:none;letter-spacing:0;}
-  body.mobile-view-log #list{display:block!important;padding:0 16px 100px!important;}
-  body.mobile-view-log .feed-row{position:relative;padding:12px 12px 12px 16px!important;margin:0 0 10px!important;border:1px solid #213540!important;border-radius:12px!important;background:linear-gradient(145deg,#0d1923,#0a151e)!important;box-shadow:none!important;}
-  body.mobile-view-log .feed-row::before{content:'';position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:3px;background:#23c7cf;opacity:.75;}
-  body.mobile-view-log .feed-row-project{font-size:9.5px!important;color:#8ea5b4!important;margin-bottom:7px!important;line-height:1.35!important;}
-  body.mobile-view-log .feed-row-top{gap:8px!important;}
-  body.mobile-view-log .trx-title{font-size:11.5px!important;line-height:1.35!important;}
-  body.mobile-view-log .trx-date{font-size:8.5px!important;}
-  body.mobile-view-log .trx-nextplan,body.mobile-view-log .trx-notes{font-size:9px!important;line-height:1.5!important;padding:9px!important;margin-top:8px!important;}
-  body.mobile-view-log .feed-timestamp{font-size:8px!important;margin-top:9px!important;color:#728b9a!important;}
-
-  /* OFR / Approval module aligned with the same design system */
-  .ofr-panel{background:linear-gradient(180deg,#08131c,#071019)!important;padding:18px 16px calc(95px + env(safe-area-inset-bottom))!important;}
-  .ofr-top{align-items:flex-start!important;margin-bottom:15px!important;}
-  .ofr-top h2{font-size:23px!important;letter-spacing:-.02em!important;line-height:1.15!important;}
-  .ofr-top p{font-size:9.5px!important;line-height:1.55!important;color:#8096a5!important;max-width:280px;}
-  .ofr-close{width:36px!important;height:36px!important;border-radius:10px!important;background:#101d27!important;border-color:#2a404c!important;}
-  .ofr-kpi{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;margin-bottom:10px!important;}
-  .ofr-kpi>div{min-height:84px!important;padding:12px!important;border-radius:12px!important;background:#0d1923!important;border-color:#213540!important;}
-  .ofr-kpi span{font-size:9px!important;}.ofr-kpi strong{font-size:18px!important;}
-  .ofr-toolbar{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:8px!important;margin-bottom:12px!important;}
-  .ofr-primary{grid-column:1/-1!important;min-height:40px!important;border-radius:10px!important;font-size:10px!important;}
-  .ofr-filter,.ofr-secondary{min-height:40px!important;border-radius:10px!important;font-size:9.5px!important;}
-  .ofr-grid{gap:10px!important;}
-  .ofr-card{padding:12px!important;border-radius:13px!important;background:#0d1923!important;border:1px solid #223641!important;border-left-width:3px!important;}
-  .ofr-card-head{display:block!important;}
-  .ofr-code{font-size:9px!important;color:#8398a7!important;line-height:1.4!important;}
-  .ofr-title{font-size:13px!important;line-height:1.35!important;margin-top:4px!important;}
-  .ofr-status{display:inline-flex!important;margin-top:8px!important;font-size:8.5px!important;padding:5px 8px!important;}
-  .ofr-amount{font-size:20px!important;margin:10px 0 0!important;}
-  .ofr-meta{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;margin-top:10px!important;}
-  .ofr-meta>div{padding:9px!important;border-radius:9px!important;background:#0a151e!important;border:1px solid #1f323e!important;}
-  .ofr-meta span{font-size:8px!important;}.ofr-meta strong{font-size:9px!important;line-height:1.4!important;}
-  .ofr-card-actions{margin-top:10px!important;gap:7px!important;}
-  .ofr-view,.ofr-act{min-height:36px!important;border-radius:9px!important;font-size:9.5px!important;}
-
-  /* Bottom navigation */
-  .bottom-nav{height:72px!important;padding-top:6px!important;box-shadow:0 -12px 30px rgba(0,0,0,.18)!important;}
-  .bottom-nav-item span{font-size:17px!important;}.bottom-nav-item small{font-size:8px!important;}
-}
-</style>
-
 </head>
 <body>
 
@@ -1162,7 +660,7 @@ body{
     </div>
     <div class="attention-card" id="attentionCard">
       <div class="attention-head">
-        <div class="attention-title-wrap"><span class="attention-icon">⚑</span><span class="attention-title">Membutuhkan Keputusan Anda</span></div>
+        <div class="attention-title-wrap"><span class="attention-icon">⚑</span><span class="attention-title">Perlu Perhatian</span></div>
         <span class="attention-count clear" id="attentionCount">0</span>
       </div>
       <div class="attention-list" id="attentionList">
@@ -1189,7 +687,6 @@ body{
     </div>
   </section>
 
-  <div class="mobile-section-head mobile-health-head"><div><strong>Portfolio Health</strong><span>Status keseluruhan proyek</span></div><button type="button" id="mobileViewAllProjects">Lihat semua ›</button></div>
   <div class="summary" id="summary"></div>
 
   <div class="search-toolbar">
@@ -1225,7 +722,6 @@ body{
   </div>
 </header>
 
-<div class="mobile-project-page-head"><div><span>Portfolio</span><strong>Proyek</strong><small>Daftar proyek, status, progres, dan nilai kontrak.</small></div></div>
 <div class="approval-banner" id="approvalBanner">
   <span id="approvalBannerText">Ada data menunggu persetujuan hapus</span>
   <span class="approval-banner-arrow">Lihat →</span>
@@ -1742,7 +1238,7 @@ const firebaseConfig = {
     render();
   });
 
-  const roleLabelMap = { direktur: 'Direktur', komisaris: 'Komisaris', finance: 'Finance', manager: 'Manager / Head', pic: 'PIC / Project Manager', admin: 'Staff Admin' };
+  const roleLabelMap = { direktur: 'Direktur', komisaris: 'Komisaris', finance: 'Finance', admin: 'Staff Admin' };
 
   const approvalBanner = document.getElementById('approvalBanner');
   const approvalBannerText = document.getElementById('approvalBannerText');
@@ -2380,15 +1876,13 @@ const firebaseConfig = {
     listEl.querySelectorAll('[data-approve-tx]').forEach(el=>{
       el.addEventListener('click', ()=>{
         if (currentRole !== 'direktur') return;
-        transactionsRef.child(el.dataset.approveTx).remove()
-          .catch(err=> alert('Gagal menyetujui penghapusan: ' + (err && err.message ? err.message : err)));
+        transactionsRef.child(el.dataset.approveTx).remove();
       });
     });
     listEl.querySelectorAll('[data-reject-tx]').forEach(el=>{
       el.addEventListener('click', ()=>{
         if (currentRole !== 'direktur') return;
-        transactionsRef.child(el.dataset.rejectTx).update({ deleteRequested: false, requestedBy: null, reqDate: null })
-          .catch(err=> alert('Gagal menolak penghapusan: ' + (err && err.message ? err.message : err)));
+        transactionsRef.child(el.dataset.rejectTx).update({ deleteRequested: false, requestedBy: null, reqDate: null });
       });
     });
   }
@@ -2574,21 +2068,14 @@ const firebaseConfig = {
       : '';
 
     const addTrxBtn = (currentRole === 'admin' || currentRole === 'finance') ? `<button class="btn-add-trx" data-add-trx="${p.id}">+ Tambah Rincian Transaksi</button>` : '';
-    const mobileEx = getDirectorExecutiveSummary(p, txs, agg);
-    const mobileHealth = mobileEx.overdue.length ? 'At Risk' : (mobileEx.total && mobileEx.completed < mobileEx.total ? 'On Track' : (mobileEx.total ? 'On Track' : 'Critical'));
-    const mobileHealthClass = mobileHealth === 'On Track' ? 'ontrack' : (mobileHealth === 'At Risk' ? 'atrisk' : 'critical');
-    const mobileMetaHtml = `<div class="mobile-project-overview"><div class="mobile-project-progress"><strong>${mobileEx.avgProgress}%</strong><div class="mobile-progress-track"><i style="width:${Math.max(0,Math.min(100,mobileEx.avgProgress))}%"></i></div></div><span class="mobile-health ${mobileHealthClass}">${mobileHealth}</span><div class="mobile-project-value"><span>Nilai Kontrak</span><strong>${fmtRp(agg.contractVal)}</strong></div></div>`;
-    const mobileDetailTabs = isExpanded ? `<div class="mobile-detail-tabs" role="tablist"><button class="active" data-mobile-detail-tab="summary">Ringkasan</button><button data-mobile-detail-tab="finance">Keuangan</button><button data-mobile-detail-tab="activities">Aktivitas</button><button data-mobile-detail-tab="team">Tim</button></div>` : '';
-    const mobileDetailHead = isExpanded ? `<div class="mobile-detail-screen-head"><button class="mobile-detail-back" data-toggle-project="${p.id}" aria-label="Kembali">‹</button><div><span>${escapeHtml(p.projectCode)}</span><strong>${escapeHtml(p.subKegiatan || 'Paket Utama')}</strong><small>${mobileHealth} · ${mobileEx.avgProgress}% progres</small></div><div class="mobile-detail-head-actions">${currentRole==='direktur'?`<button class="mobile-detail-manage" data-manage-project="${p.id}">Kelola …</button>`:''}</div></div>` : '';
 
     return `
-      <div class="project-card ${isExpanded ? 'is-expanded' : ''}" data-project-id="${p.id}" data-detail-tab="summary" style="--project-accent:${pal.accent};">
+      <div class="project-card" data-project-id="${p.id}" style="--project-accent:${pal.accent};">
         <div class="project-card-header" data-toggle-project="${p.id}">
           <div class="project-card-title-wrap">
             <div class="project-card-code" style="color:${pal.textMain};">${escapeHtml(p.projectCode)}</div>
             <div class="project-card-sub" style="color:${pal.textSub};">${escapeHtml(p.subKegiatan || 'Paket Utama')}</div>
             <div class="rag-badge" style="background:${pal.chipBg}; color:${pal.accent}; border:1px solid ${pal.accent}55;">${rag.emoji} ${rag.label}</div>
-            ${mobileMetaHtml}
           </div>
           <div class="project-card-actions">
             ${editDeleteIcons}
@@ -2596,8 +2083,6 @@ const firebaseConfig = {
           </div>
         </div>
         <div class="project-card-body-wrap" style="${isExpanded ? '' : 'display:none;'}">
-          ${mobileDetailHead}
-          ${mobileDetailTabs}
           ${financeGridHtml}
           <div class="trx-list">
             ${txRowsHtml}
@@ -2681,15 +2166,6 @@ const firebaseConfig = {
         const id = el.dataset.toggleProject;
         expandedProjectId = (expandedProjectId === id) ? null : id;
         render();
-      });
-    });
-    listEl.querySelectorAll('[data-mobile-detail-tab]').forEach(el=>{
-      el.addEventListener('click', (e)=>{
-        e.stopPropagation();
-        const card = el.closest('.project-card');
-        if(!card) return;
-        card.dataset.detailTab = el.dataset.mobileDetailTab || 'summary';
-        card.querySelectorAll('[data-mobile-detail-tab]').forEach(b=>b.classList.toggle('active', b===el));
       });
     });
     listEl.querySelectorAll('[data-edit-project]').forEach(el=>{
@@ -2820,20 +2296,16 @@ const firebaseConfig = {
 
     const payload = { projectCode, subKegiatan, pagu, contractValue, marketingRate, marketingFee, marketingTerm, auditLogs, updatedAt: getRealtimeString() };
 
-    pBtnSave.disabled = true;
-    const writePromise = editingProjectId
-      ? projectsRef.child(editingProjectId).update(payload)
-      : (()=>{
-          payload.createdAt = getRealtimeString();
-          payload.createdBy = currentRole;
-          const newRef = projectsRef.push();
-          expandedProjectId = newRef.key;
-          return newRef.set(payload);
-        })();
-    writePromise
-      .then(()=>{ overlayProject.classList.remove('show'); })
-      .catch(err=> alert('Gagal menyimpan proyek: ' + (err && err.message ? err.message : err)))
-      .finally(()=>{ pBtnSave.disabled = false; });
+    if (editingProjectId){
+      projectsRef.child(editingProjectId).update(payload);
+    } else {
+      payload.createdAt = getRealtimeString();
+      payload.createdBy = currentRole;
+      const newRef = projectsRef.push(payload);
+      expandedProjectId = newRef.key;
+      render();
+    }
+    overlayProject.classList.remove('show');
   });
 
   pBtnDelete.addEventListener('click', ()=>{
@@ -3009,45 +2481,40 @@ const firebaseConfig = {
 
     const payload = { projectId, title, date, progress, status, notes, nextPlan, bankCode, cashIn, cashOut, recordedAt, updatedAt, auditLogs };
 
-    tBtnSave.disabled = true;
-    const txWritePromise = editingTxId
-      ? transactionsRef.child(editingTxId).update({ ...payload, updatedBy: currentRole })
-      : transactionsRef.push().set({ ...payload, createdBy: currentRole, updatedBy: currentRole, deleteRequested: false, requestedBy: null });
-    txWritePromise
-      .then(()=>{ overlayTx.classList.remove('show'); })
-      .catch(err=> alert('Gagal menyimpan aktivitas/transaksi: ' + (err && err.message ? err.message : err)))
-      .finally(()=>{ tBtnSave.disabled = false; });
+    if (editingTxId){
+      transactionsRef.child(editingTxId).update({ ...payload, updatedBy: currentRole });
+    } else {
+      transactionsRef.push({ ...payload, createdBy: currentRole, updatedBy: currentRole, deleteRequested: false, requestedBy: null });
+    }
+    overlayTx.classList.remove('show');
   });
 
   tBtnDelete.addEventListener('click', ()=>{
     if (currentRole !== 'direktur' || !editingTxId) return;
     if (confirm('Hapus rincian transaksi ini secara permanen?')){
-      transactionsRef.child(editingTxId).remove()
-        .then(()=> overlayTx.classList.remove('show'))
-        .catch(err=> alert('Gagal menghapus rincian: ' + (err && err.message ? err.message : err)));
+      transactionsRef.child(editingTxId).remove();
+      overlayTx.classList.remove('show');
     }
   });
 
   tBtnReqDelete.addEventListener('click', ()=>{
     if ((currentRole !== 'admin' && currentRole !== 'finance') || !editingTxId) return;
     const reqTimestamp = getRealtimeString();
-    transactionsRef.child(editingTxId).update({ deleteRequested: true, requestedBy: currentRole, reqDate: reqTimestamp })
-      .then(()=>{ alert(`Permintaan hapus dicatat pada ${reqTimestamp}. Menunggu ACC Direktur.`); overlayTx.classList.remove('show'); })
-      .catch(err=> alert('Gagal mengajukan hapus: ' + (err && err.message ? err.message : err)));
+    transactionsRef.child(editingTxId).update({ deleteRequested: true, requestedBy: currentRole, reqDate: reqTimestamp });
+    alert(`Permintaan hapus dicatat pada ${reqTimestamp}. Menunggu ACC Direktur.`);
+    overlayTx.classList.remove('show');
   });
 
   tBtnApproveDelete.addEventListener('click', ()=>{
     if (currentRole !== 'direktur' || !editingTxId) return;
-    transactionsRef.child(editingTxId).remove()
-      .then(()=> overlayTx.classList.remove('show'))
-      .catch(err=> alert('Gagal menyetujui penghapusan: ' + (err && err.message ? err.message : err)));
+    transactionsRef.child(editingTxId).remove();
+    overlayTx.classList.remove('show');
   });
 
   tBtnRejectDelete.addEventListener('click', ()=>{
     if (currentRole !== 'direktur' || !editingTxId) return;
-    transactionsRef.child(editingTxId).update({ deleteRequested: false, requestedBy: null, reqDate: null })
-      .then(()=> overlayTx.classList.remove('show'))
-      .catch(err=> alert('Gagal menolak penghapusan: ' + (err && err.message ? err.message : err)));
+    transactionsRef.child(editingTxId).update({ deleteRequested: false, requestedBy: null, reqDate: null });
+    overlayTx.classList.remove('show');
   });
 
   function deleteProjectCascade(id){
@@ -3176,15 +2643,13 @@ const firebaseConfig = {
     const b=budgetFor(projectId), exception=(b.remaining-amount)<0, code=nextCode(), id=fundRef.push().key, matrix=matrixFor(amount);
     const initialStatus=r==='pic'?'FINANCE_REVIEW':'SUBMITTED';
     const obj={id,code,projectId,category:$('ofrCategory').value,purpose,amount,neededDate,beneficiary:$('ofrBeneficiary').value.trim(),evidence:$('ofrEvidence').value.trim(),notes:$('ofrNotes').value.trim(),status:initialStatus,createdBy:r,createdAt:now(),createdMs:Date.now(),budgetException:exception,approvalRoute:matrix.route,auditLogs:addLog([],r==='pic'?'SUBMITTED_AND_PIC_APPROVED':'SUBMITTED',r==='pic'?'PIC membuat request sekaligus menyatakan operational approval; lanjut Finance verification.':'Request submitted; nominal dikunci untuk approval.')};
-    fundRef.child(id).set(obj)
-      .then(()=>{$('overlayOfr').classList.remove('show');openModule();})
-      .catch(err=>alert('Gagal mengirim Operational Fund Request: '+(err&&err.message?err.message:err)));
+    fundRef.child(id).set(obj).then(()=>{$('overlayOfr').classList.remove('show');openModule();});
   });
 
   function nextAfterFinance(fr){const a=Number(fr.amount||0); if(fr.budgetException)return'DIRECTOR_APPROVAL'; if(a<=1000000)return'APPROVED_FOR_PAYMENT'; if(a<=5000000)return'MANAGER_APPROVAL'; return'MANAGER_APPROVAL';}
   function afterManager(fr){const a=Number(fr.amount||0); return (a<=5000000&&!fr.budgetException)?'APPROVED_FOR_PAYMENT':'DIRECTOR_APPROVAL';}
   function afterDirector(fr){return Number(fr.amount||0)>100000000?'BOARD_APPROVAL':'APPROVED_FOR_PAYMENT';}
-  function actionUpdate(fr,newStatus,action,note,extra={}){const logs=addLog(fr.auditLogs,action,note);return fundRef.child(fr.id).update({...extra,status:newStatus,auditLogs:logs,updatedAt:now()}).catch(err=>{alert('Aksi approval gagal: '+(err&&err.message?err.message:err));throw err;});}
+  function actionUpdate(fr,newStatus,action,note,extra={}){const logs=addLog(fr.auditLogs,action,note);return fundRef.child(fr.id).update({...extra,status:newStatus,auditLogs:logs,updatedAt:now()});}
   function askNote(label,required=true){const n=prompt(label)||''; if(required&&!n.trim())return null;return n.trim();}
 
   function openDetail(id){selectedId=id; const fr=fundRequests.find(x=>x.id===id);if(!fr)return; const p=projectById(fr.projectId),b=budgetFor(fr.projectId),r=role(),m=matrixFor(Number(fr.amount||0));
@@ -3222,7 +2687,7 @@ const firebaseConfig = {
     const tx={projectId:fr.projectId,title:'OFR '+fr.code+' · '+fr.purpose,date:today(),progress:0,status:'sedang',notes:'Disbursement dari approved Operational Fund Request. Payment ref: '+ref,nextPlan:'Menunggu settlement/pertanggungjawaban.',bankCode:bank,cashIn:0,cashOut:paid,recordedAt:now(),updatedAt:now(),createdBy:'finance',updatedBy:'finance',deleteRequested:false,requestedBy:null,ofrId:fr.id};
     const logs=addLog(fr.auditLogs,'PAID','Payment '+rp(paid)+' · '+bank+' · Ref '+ref,'finance');
     const updates={};updates['/fundRequests/'+fr.id+'/status']='PAID';updates['/fundRequests/'+fr.id+'/payment']=payment;updates['/fundRequests/'+fr.id+'/paymentTxId']=txKey;updates['/fundRequests/'+fr.id+'/auditLogs']=logs;updates['/transactions/'+txKey]=tx;
-    db.ref().update(updates).then(()=>openDetail(fr.id)).catch(err=>alert('Proses pembayaran gagal: '+(err&&err.message?err.message:err)));
+    db.ref().update(updates).then(()=>openDetail(fr.id));
   }
   function settleReq(fr){const actualText=prompt('Actual expense / total bukti (Rp):','0');if(actualText===null)return;const retText=prompt('Sisa dana yang dikembalikan (Rp):','0');if(retText===null)return;const actual=Number(String(actualText).replace(/[^0-9]/g,''))||0,ret=Number(String(retText).replace(/[^0-9]/g,''))||0;const paid=Number(fr.payment?.amount||fr.amount||0);if(actual+ret!==paid){alert('Settlement tidak balance. Actual Expense + Return harus sama dengan dana yang dicairkan ('+rp(paid)+').');return;}const evidence=askNote('Referensi bukti/receipt/nota/transfer pengembalian (wajib):');if(evidence===null)return;const settlement={actualExpense:actual,returnAmount:ret,evidence,submittedAt:now(),submittedBy:role()};actionUpdate(fr,'SETTLEMENT_SUBMITTED','SETTLEMENT_SUBMITTED','Actual '+rp(actual)+'; return '+rp(ret)+'; evidence '+evidence,{settlement}).then(()=>openDetail(fr.id));}
   function verifySettlement(fr){const note=askNote('Catatan verifikasi settlement (wajib):');if(note===null)return;const st=fr.settlement||{},paid=Number(fr.payment?.amount||fr.amount||0);if(Number(st.actualExpense||0)+Number(st.returnAmount||0)!==paid){alert('Settlement tidak balance dan tidak dapat ditutup.');return;}actionUpdate(fr,'CLOSED','SETTLEMENT_VERIFIED_AND_CLOSED',note,{closedAt:now(),closedBy:'finance'}).then(()=>openDetail(fr.id));}
@@ -3249,30 +2714,6 @@ const firebaseConfig = {
     const settings=document.getElementById('btnSettingsVisual');
     settings&&settings.addEventListener('click',()=>window.openAccountSettings&&window.openAccountSettings());
   })();
-</script>
-
-
-<script id="v58-mobile-view-controller">
-(function(){
-  const mobile=()=>window.matchMedia('(max-width:700px)').matches;
-  function setView(view){
-    if(!mobile()) return;
-    document.body.classList.remove('mobile-view-dashboard','mobile-view-projects','mobile-view-cash','mobile-view-log');
-    document.body.classList.add('mobile-view-'+view);
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
-  function bind(){
-    if(!mobile()) return;
-    if(!document.body.classList.contains('mobile-view-dashboard')&&!document.body.classList.contains('mobile-view-projects')&&!document.body.classList.contains('mobile-view-cash')&&!document.body.classList.contains('mobile-view-log')) setView('dashboard');
-    document.getElementById('navDashboard')?.addEventListener('click',()=>setView('dashboard'));
-    document.getElementById('navProjects')?.addEventListener('click',()=>setView('projects'));
-    document.getElementById('navCash')?.addEventListener('click',()=>setView('cash'));
-    document.getElementById('navLog')?.addEventListener('click',()=>{setView('log');setTimeout(()=>document.getElementById('btnViewFeed')?.click(),0);});
-    document.getElementById('mobileViewAllProjects')?.addEventListener('click',()=>{setView('projects');document.querySelectorAll('.bottom-nav-item').forEach(b=>b.classList.toggle('active',b.id==='navProjects'));});
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind); else bind();
-  window.addEventListener('resize',()=>{if(!mobile()) document.body.classList.remove('mobile-view-dashboard','mobile-view-projects','mobile-view-cash','mobile-view-log');});
-})();
 </script>
 
 </body>
