@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- V5.7 Mobile Responsive UI — visual responsive layer only -->
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -576,6 +577,239 @@ body{
 @media(max-width:620px){.exec-grid{grid-template-columns:1fr 1fr}.exec-owner-row{grid-template-columns:1fr}.exec-score{font-size:19px}}
 
 </style>
+
+<style id="v57-mobile-responsive-ui">
+/* =========================================================
+   V5.7 — Mobile Responsive UI
+   Visual-only responsive layer. Firebase/Auth/Rules/data flow untouched.
+   Desktop layout remains unchanged; overrides apply only to <=700px.
+   ========================================================= */
+@media (max-width:700px){
+  html{background:#0d1117;}
+  body{
+    background:
+      radial-gradient(circle at 50% -120px, rgba(27,163,184,.11), transparent 340px),
+      #0d1117;
+    color:#f4f7f9;
+    padding-bottom:calc(86px + env(safe-area-inset-bottom));
+  }
+
+  /* App top bar */
+  .app-header{padding:13px 14px 0;overflow:visible;}
+  .profile-row{margin:0 0 15px;min-height:42px;gap:8px;}
+  .profile-identity{gap:9px;}
+  .avatar{
+    width:38px;height:38px;flex:0 0 38px;border-width:2px;
+    font-size:11px;background:#dbe8f5;color:#0c1720;box-shadow:none;
+  }
+  .profile-name{font-size:14px;font-weight:800;letter-spacing:-.01em;}
+  .profile-meta{font-size:10.5px;margin-top:2px;gap:4px;}
+  .profile-dot{font-size:9px;}
+  .conn{font-size:10.5px;}
+  .profile-actions{gap:2px;}
+  .icon-control{width:38px;height:38px;border-radius:11px;font-size:18px;color:#bdc7d1;}
+  #btnSettingsVisual{display:none;}
+
+  /* Product title becomes compact mobile brand header */
+  .page-heading{margin:0 0 11px;}
+  .page-heading h1{
+    margin:0;color:#eef6f8;font-size:14px;line-height:1.2;
+    font-weight:800;letter-spacing:-.01em;
+  }
+  .page-heading p{display:none;}
+
+  /* Greeting: clean, flat, executive */
+  .personal-dashboard{gap:11px;margin:0 0 13px;}
+  .personal-greeting{
+    padding:8px 1px 10px;background:transparent;border:0;border-radius:0;
+  }
+  .personal-greeting-main{font-size:23px;line-height:1.12;font-weight:850;letter-spacing:-.025em;}
+  .personal-greeting-sub{font-size:12px;color:#93a3b1;margin-top:5px;}
+
+  /* Decision / attention card */
+  .attention-card{
+    padding:13px;background:linear-gradient(145deg,rgba(116,32,38,.28),rgba(39,19,24,.35));
+    border:1px solid rgba(239,99,99,.35);border-radius:15px;
+  }
+  .attention-head{margin-bottom:8px;}
+  .attention-title-wrap{gap:8px;}
+  .attention-icon{
+    width:27px;height:27px;border-radius:9px;background:rgba(239,99,99,.13);
+    color:#ff7272;font-size:13px;
+  }
+  .attention-title{font-size:13px;color:#ff7777;}
+  .attention-count{height:24px;min-width:24px;font-size:10px;}
+  .attention-list{gap:6px;}
+  .attention-item{
+    padding:9px 10px;background:rgba(12,17,23,.45);
+    border-color:rgba(239,99,99,.20);border-radius:10px;
+  }
+  .attention-copy strong{font-size:11.5px;}
+  .attention-copy span{font-size:10.5px;}
+
+  /* Financial dashboard -> KPI card grid */
+  .finance-hero{
+    display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;
+    padding:0;margin:0 0 11px;background:transparent!important;border:0!important;
+    border-radius:0!important;box-shadow:none!important;
+  }
+  .finance-hero-top,
+  .finance-item{
+    min-height:88px;padding:12px!important;text-align:left!important;
+    border:1px solid #263441!important;border-radius:13px!important;
+    background:linear-gradient(145deg,#121b24,#10171f)!important;
+  }
+  .finance-hero-top{display:flex;flex-direction:column;justify-content:center;}
+  .eyebrow,.finance-item span{
+    color:#a6b6c4!important;font-size:10.5px!important;font-weight:600!important;
+    letter-spacing:0!important;margin:0 0 7px!important;text-transform:none;
+  }
+  .finance-hero-top>strong{
+    margin:0!important;font-size:20px!important;line-height:1.08!important;
+    font-weight:850!important;letter-spacing:-.025em!important;color:#fff!important;
+  }
+  .hero-status{justify-content:flex-start;margin-top:7px;font-size:9.5px;color:#6bd4b4;}
+  .status-dot{width:6px;height:6px;box-shadow:none;}
+  .finance-divider{display:none!important;}
+  .finance-metrics{display:contents!important;}
+  .finance-item{display:flex!important;flex-direction:column;justify-content:center;min-width:0;}
+  .finance-item strong{font-size:16px!important;line-height:1.14!important;font-weight:800!important;overflow-wrap:anywhere;}
+  .finance-crossing{grid-column:1/-1;min-height:68px!important;}
+  .finance-crossing strong{font-size:14px!important;}
+  .crossing-summary-card{
+    grid-column:1/-1;margin:-4px 0 0!important;padding:0 2px!important;
+    font-size:9.5px!important;text-align:left!important;color:#8393a1!important;
+  }
+
+  /* Portfolio health summary */
+  .summary{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:0 0 13px;
+    background:#111922;border:1px solid #263441;border-radius:14px;overflow:hidden;
+  }
+  .summary-chip{
+    min-width:0;border:0;border-right:1px solid #263441;border-radius:0;
+    background:transparent;padding:12px 5px;text-align:center;
+  }
+  .summary-chip:last-child{border-right:0;}
+  .summary-chip .num{font-size:21px;}
+  .summary-chip .lbl{font-size:9.5px;margin-top:5px;white-space:normal;}
+
+  /* Search and filters */
+  .search-toolbar{gap:7px;margin:0 0 9px;}
+  .search-wrap input{
+    height:44px;border-radius:11px;background:#111922;border-color:#2b3a48;
+    padding:0 36px 0 40px;font-size:12px;
+  }
+  .search-glyph{left:12px;font-size:20px;}
+  .btn-clear-search{right:7px;}
+  .filter-toggle{width:44px;height:44px;border-radius:11px;background:#172330;border-color:#314250;}
+  .advanced-filters{border-radius:12px;padding:10px;margin-bottom:9px;}
+
+  /* Status chips become a mobile filter rail */
+  .tabs{
+    margin:0!important;padding:0 14px 11px!important;gap:7px!important;
+    background:transparent!important;border-radius:0!important;
+  }
+  .tab{
+    min-height:36px!important;padding:0 12px!important;font-size:10.5px!important;
+    border-radius:9px!important;background:#15202a!important;border-color:#2d3b47!important;
+  }
+  .tab.active{background:#0f6c72!important;border-color:#1bb4bd!important;color:#fff!important;}
+
+  .approval-banner{margin:0 14px 10px;border-radius:12px;}
+  .section-label{
+    padding:2px 14px 8px;color:#8fa0ad;font-size:10px;letter-spacing:.07em;
+  }
+
+  /* Project list cards: compact mobile portfolio */
+  .list{padding:0 14px calc(104px + env(safe-area-inset-bottom));gap:9px;}
+  .project-card{
+    border:1px solid #283744!important;border-left:1px solid #283744!important;
+    border-radius:14px!important;background:linear-gradient(145deg,#111a23,#0f161d)!important;
+    padding-left:0!important;overflow:hidden;
+  }
+  .project-card::before{display:none!important;}
+  .project-card-header{padding:13px 12px 12px;gap:8px;align-items:flex-start;}
+  .project-card-title-wrap{padding-right:2px;}
+  .project-card-code{font-size:13.5px!important;line-height:1.25!important;}
+  .project-card-sub{font-size:11px!important;line-height:1.35!important;margin-top:3px!important;color:#a3b1bd!important;}
+  .rag-badge{
+    margin-top:8px!important;padding:4px 8px!important;font-size:9px!important;
+    background:#18242d!important;border-radius:999px!important;
+  }
+  .project-card-actions{gap:5px;align-items:center;}
+  .btn-manage-project{
+    height:32px;padding:0 9px;border-radius:9px;font-size:10.5px;background:#182531;border-color:#334653;
+  }
+  .btn-manage-project .dots{font-size:14px;}
+  .project-card-actions .chevron::after{content:'›';font-size:22px;color:#9fb0bc;font-weight:500;}
+  .project-card-body-wrap{
+    padding:0 11px 12px;border-top:1px solid #25333e;
+    background:rgba(7,11,15,.12);
+  }
+  .card-pagu-info,.card-finance-row{
+    background:#0d151c!important;border-color:#273642!important;border-radius:11px!important;
+  }
+  .trx-row{background:#0d151c!important;border-color:#273642!important;border-radius:11px!important;}
+  .btn-add-trx{min-height:42px;border-radius:10px;}
+
+  /* Manage menu: fit safely on a phone */
+  .project-manage-wrap{position:relative;}
+  .project-action-menu{
+    right:0;top:37px;width:min(270px,calc(100vw - 44px));
+    border-radius:12px;background:#18212a;border-color:#3b4a57;
+    box-shadow:0 18px 45px rgba(0,0,0,.52);
+  }
+  .project-action-item{padding:10px;border-radius:8px;}
+  .project-action-item strong{font-size:11px;}
+  .project-action-item small{font-size:9.5px;}
+  .project-action-item .pa-icon{font-size:12px;color:#aab8c4;}
+
+  /* Modal/sheet becomes a native-feeling mobile bottom sheet */
+  .overlay{align-items:flex-end!important;padding:0!important;background:rgba(0,0,0,.68)!important;}
+  .sheet{
+    width:100%!important;max-width:none!important;max-height:92dvh!important;
+    border-radius:22px 22px 0 0!important;padding:19px 15px calc(15px + env(safe-area-inset-bottom))!important;
+    border-left:1px solid #394854!important;border-right:1px solid #394854!important;border-top:1px solid #394854!important;
+  }
+  .sheet h2{font-size:18px;}
+  .sheet .sheet-sub{font-size:11px;}
+  .field input[type="text"],.field input[type="date"],.field input[type="number"],.field select,.field textarea{
+    min-height:44px;border-radius:10px;font-size:13px;
+  }
+  .grid-2{gap:8px;}
+  .sheet-actions{gap:8px;}
+  .btn{min-height:45px;border-radius:10px;font-size:13px;}
+
+  /* Bottom app navigation */
+  .bottom-nav{
+    height:72px;padding:5px 7px calc(5px + env(safe-area-inset-bottom));
+    grid-template-columns:repeat(5,1fr)!important;background:rgba(9,14,19,.96);
+    border-top:1px solid #263440;backdrop-filter:blur(18px);z-index:900;
+  }
+  .bottom-nav-item{min-height:52px;gap:3px;border-radius:9px;}
+  .bottom-nav-item span{font-size:18px;}
+  .bottom-nav-item small{font-size:8.5px;letter-spacing:.01em;}
+  .bottom-nav-item.active{color:#22c7cf;background:rgba(34,199,207,.07);}
+  .nav-badge{transform:scale(.88);}
+
+  .fab{
+    width:52px;height:52px;right:16px;bottom:calc(84px + env(safe-area-inset-bottom));
+    font-size:25px;border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,.45);
+  }
+  .back-to-view-btn{margin:0 14px 10px;}
+}
+
+@media (max-width:390px){
+  .personal-greeting-main{font-size:21px;}
+  .finance-hero-top,.finance-item{min-height:82px;padding:11px!important;}
+  .finance-hero-top>strong{font-size:18px!important;}
+  .finance-item strong{font-size:14px!important;}
+  .project-card-header{padding:12px 10px 11px;}
+  .btn-manage-project{padding:0 8px;}
+}
+</style>
+
 </head>
 <body>
 
