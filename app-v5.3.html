@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Monitoring Pagu, Kontrak & Kas Proyek — V5.5 Executive</title>
+<title>Monitoring Pagu, Kontrak & Kas Proyek — V5.6.1 Executive</title>
 <style>#loginScreen{display:none!important}
 /* V5.6 Professional Project Actions */
 .project-manage-wrap{position:relative;z-index:30}
@@ -22,6 +22,12 @@
 .project-action-item.disabled{opacity:.48;cursor:not-allowed}
 .project-action-item.disabled:hover{background:transparent}
 @media(max-width:520px){.project-action-menu{width:240px}.btn-manage-project{padding:0 11px}}
+/* V5.6.1: keep the management menu above executive cards */
+.project-card:has(.project-action-menu.show){overflow:visible!important;contain:none!important;z-index:500!important}
+.project-card:has(.project-action-menu.show) .project-card-header{position:relative;z-index:510}
+.project-card:has(.project-action-menu.show) .project-manage-wrap{z-index:520}
+.project-card:has(.project-action-menu.show) .project-action-menu{z-index:530}
+.project-card:has(.project-action-menu.show) .project-card-body-wrap{position:relative;z-index:1}
 
 </style>
 <meta name="mobile-web-app-capable" content="yes">
